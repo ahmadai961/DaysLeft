@@ -307,8 +307,8 @@ export default function App() {
         pendingTaskCount={pendingCount}
       />
 
-      {/* Main Container */}
-      <main className="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-5 sm:space-y-8 flex-1">
+      {/* Main Container with extra bottom padding for mobile navigation and FAB */}
+      <main className="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28 sm:pb-12 space-y-5 sm:space-y-8 flex-1">
         {/* Mobile View Switcher (Screen < lg) */}
         <div className="lg:hidden flex items-center p-1 bg-zinc-100 rounded-2xl border border-zinc-200">
           <button
@@ -518,6 +518,18 @@ export default function App() {
           <ProductivityAnalytics tasks={tasks} />
         </section>
       </main>
+
+      {/* Mobile Floating Action Button (FAB) for quick access */}
+      <button
+        type="button"
+        onClick={() => handleOpenNewTaskModal(selectedDateStr)}
+        className="fixed bottom-6 right-5 z-40 lg:hidden flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3.5 rounded-full shadow-2xl border border-zinc-700/60 active:scale-95 transition-all cursor-pointer group"
+        aria-label="Add Task / Create Countdown"
+        id="mobile-fab-add-task"
+      >
+        <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
+        <span className="text-xs font-bold tracking-wide pr-1">Add Task</span>
+      </button>
 
       {/* Task Creation & Edit Modal */}
       <TaskModal

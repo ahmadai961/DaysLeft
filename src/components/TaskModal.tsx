@@ -143,13 +143,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-900/40 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
       <div
-        className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]"
+        className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh] my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-100 flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-100 flex items-center justify-between shrink-0 bg-white z-10">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
               <Calendar className="w-4 h-4" />
@@ -171,8 +171,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </button>
         </div>
 
-        {/* Modal Form Content */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto px-4 sm:px-6 py-4 sm:py-5 space-y-4 flex-1">
+        {/* Modal Form Content with vertical scroll & extra bottom padding */}
+        <form
+          onSubmit={handleSubmit}
+          className="overflow-y-auto px-4 sm:px-6 pt-4 pb-28 sm:pb-6 space-y-4 flex-1 relative"
+        >
           {/* Quick Date Presets */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[11px] font-semibold text-zinc-400 mr-1">Presets:</span>
@@ -466,20 +469,21 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             />
           </div>
 
-          {/* Footer Actions */}
-          <div className="border-t border-zinc-100 pt-4 flex items-center justify-end gap-2.5">
+          {/* Footer Actions: Sticky at bottom */}
+          <div className="sticky bottom-0 bg-white/95 backdrop-blur-md -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 border-t border-zinc-200 flex items-center justify-end gap-2.5 z-20 shadow-xs">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 min-h-[42px] text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all cursor-pointer"
+              className="flex-1 sm:flex-initial px-4 py-2.5 min-h-[42px] text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all cursor-pointer text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 min-h-[42px] text-xs font-bold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-xs transition-all cursor-pointer active:scale-98"
+              className="flex-1 sm:flex-initial px-5 py-2.5 min-h-[42px] text-xs font-bold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-xs transition-all cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 text-center"
             >
-              {taskToEdit ? 'Save Changes' : 'Assign Task'}
+              <Plus className="w-3.5 h-3.5 shrink-0" />
+              <span>{taskToEdit ? 'Save Changes' : 'Create Countdown'}</span>
             </button>
           </div>
         </form>

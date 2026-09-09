@@ -54,14 +54,14 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/60 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
       <div
-        className="bg-white border border-zinc-200/90 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative transform transition-all animate-in zoom-in-95 duration-200"
+        className="bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative transform transition-all animate-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col my-auto"
         role="dialog"
         aria-modal="true"
       >
         {/* Top Header Wave / Gradient */}
-        <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-6 text-white text-center relative overflow-hidden">
+        <div className="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 p-5 sm:p-6 text-white text-center relative overflow-hidden shrink-0">
           {/* Subtle background glow circles */}
           <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
           <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
@@ -79,7 +79,7 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-4">
+        <div className="overflow-y-auto p-5 sm:p-6 space-y-4 flex-1">
           {/* Task Title & Category */}
           <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-3.5 flex items-start justify-between gap-3">
             <div>
