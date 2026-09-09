@@ -16,7 +16,7 @@ import { TaskModal } from './components/TaskModal';
 import { ZenFocusOverlay } from './components/ZenFocusOverlay';
 import { TaskCompletionModal } from './components/TaskCompletionModal';
 import { ProductivityAnalytics } from './components/ProductivityAnalytics';
-import { Clock, Calendar as CalendarIcon, Plus, ChevronRight, Check } from 'lucide-react';
+import { Clock, Calendar as CalendarIcon, Plus, ChevronRight, Check, Layers } from 'lucide-react';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(() => loadTasksFromStorage());
@@ -34,7 +34,7 @@ export default function App() {
   const [modalInitialDate, setModalInitialDate] = useState<string>(() =>
     formatDateToISO(new Date())
   );
-  const [mobileTab, setMobileTab] = useState<'calendar' | 'countdowns' | 'both'>('calendar');
+  const [mobileTab, setMobileTab] = useState<'calendar' | 'countdowns' | 'both'>('both');
 
   // Sync tasks to localStorage whenever modified
   useEffect(() => {
@@ -308,9 +308,9 @@ export default function App() {
       />
 
       {/* Main Container with extra bottom padding for mobile navigation and FAB */}
-      <main className="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28 sm:pb-12 space-y-5 sm:space-y-8 flex-1">
+      <main className="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28 sm:pb-12 space-y-5 sm:space-y-8 flex-1 overflow-x-hidden">
         {/* Mobile View Switcher (Screen < lg) */}
-        <div className="lg:hidden flex items-center p-1 bg-zinc-100 rounded-2xl border border-zinc-200">
+        <div className="lg:hidden flex items-center p-1 bg-zinc-100 rounded-2xl border border-zinc-200 shadow-2xs">
           <button
             type="button"
             onClick={() => setMobileTab('calendar')}
@@ -320,7 +320,7 @@ export default function App() {
                 : 'text-zinc-500 hover:text-zinc-800'
             }`}
           >
-            <CalendarIcon className="w-3.5 h-3.5" />
+            <CalendarIcon className="w-3.5 h-3.5 shrink-0" />
             <span>Calendar</span>
           </button>
           <button
@@ -332,7 +332,7 @@ export default function App() {
                 : 'text-zinc-500 hover:text-zinc-800'
             }`}
           >
-            <Clock className="w-3.5 h-3.5" />
+            <Clock className="w-3.5 h-3.5 shrink-0" />
             <span>Countdowns</span>
             {tasks.length > 0 && (
               <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-zinc-200 text-zinc-700 font-bold ml-0.5">
@@ -343,23 +343,24 @@ export default function App() {
           <button
             type="button"
             onClick={() => setMobileTab('both')}
-            className={`px-3 py-2 min-h-[40px] rounded-xl text-xs font-bold flex items-center justify-center transition-all cursor-pointer ${
+            className={`flex-1 py-2 min-h-[40px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               mobileTab === 'both'
                 ? 'bg-white text-zinc-900 shadow-xs'
                 : 'text-zinc-500 hover:text-zinc-800'
             }`}
           >
+            <Layers className="w-3.5 h-3.5 shrink-0" />
             <span>Both</span>
           </button>
         </div>
 
         {/* Content Layout: Calendar on the Left, All Countdowns on the Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full">
           {/* Left Column: Calendar Grid */}
           <div
             className={`${
               mobileTab === 'countdowns' ? 'hidden lg:block' : 'block'
-            } lg:col-span-7 xl:col-span-7 space-y-4 sm:space-y-6`}
+            } lg:col-span-7 xl:col-span-7 space-y-4 sm:space-y-6 w-full min-w-0`}
           >
             {viewMode === 'month' && (
               <MonthCalendar
@@ -490,7 +491,7 @@ export default function App() {
           <div
             className={`${
               mobileTab === 'calendar' ? 'hidden lg:block' : 'block'
-            } lg:col-span-5 xl:col-span-5 space-y-6`}
+            } lg:col-span-5 xl:col-span-5 space-y-6 w-full min-w-0`}
           >
             <CountdownList
               tasks={filteredTasks}

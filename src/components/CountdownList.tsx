@@ -64,7 +64,7 @@ export const CountdownList: React.FC<CountdownListProps> = ({
   });
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs space-y-4">
+    <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 sm:p-5 shadow-xs space-y-4 w-full min-w-0 overflow-hidden">
       {/* Header & Filter Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4">
         <div>
@@ -79,7 +79,7 @@ export const CountdownList: React.FC<CountdownListProps> = ({
 
         {/* Filter Pills */}
         {!isOverallEmpty && (
-          <div className="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-xl overflow-x-auto">
+          <div className="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-xl overflow-x-auto max-w-full">
             {(['all', 'upcoming', 'today', 'overdue', 'completed'] as FilterTab[]).map((tab) => (
               <button
                 type="button"

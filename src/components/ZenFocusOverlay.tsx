@@ -258,7 +258,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
   return (
     <div
       id="zen-focus-overlay"
-      className="fixed inset-0 z-50 bg-[#07090e] text-zinc-100 flex flex-col justify-between overflow-hidden select-none font-sans"
+      className="fixed inset-0 z-50 bg-[#07090e] text-zinc-100 flex flex-col min-h-screen overflow-y-auto pb-24 select-none font-sans"
       style={{
         backgroundImage:
           'radial-gradient(ellipse 80% 60% at 50% -20%, rgba(56, 189, 248, 0.15), transparent 70%), radial-gradient(ellipse 60% 40% at 50% 120%, rgba(99, 102, 241, 0.12), transparent 70%)',
@@ -280,19 +280,19 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
       />
 
       {/* Top Header Bar */}
-      <header className="relative z-10 w-full px-6 py-5 flex items-center justify-between border-b border-zinc-800/60 bg-[#07090e]/60 backdrop-blur-md">
+      <header className="relative z-10 w-full px-4 sm:px-6 py-3.5 sm:py-4 flex items-center justify-between border-b border-zinc-800/60 bg-[#07090e]/80 backdrop-blur-md shrink-0 flex-wrap gap-2.5">
         {/* Left: Zen Brand & Category */}
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.25)] shrink-0">
             <Flame className="w-4 h-4" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-sky-400">
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-sky-400 whitespace-nowrap">
                 ZEN FOCUS MODE
               </span>
               <span className="text-zinc-600">•</span>
-              <span className="text-xs font-medium text-zinc-400">
+              <span className="text-[11px] sm:text-xs font-medium text-zinc-400 truncate max-w-[120px] sm:max-w-[200px]">
                 {task.category}
               </span>
             </div>
@@ -316,24 +316,24 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
         </div>
 
         {/* Right: Toggle Milestones Drawer & Exit Button */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 shrink-0 ml-auto sm:ml-0">
           <button
             type="button"
             onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer min-h-[36px] ${
               isDrawerOpen
                 ? 'bg-sky-500/15 border-sky-500/30 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.15)]'
                 : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden md:inline">Milestones</span>
+            <span className="inline">Milestones</span>
           </button>
 
           <button
             type="button"
             onClick={onClose}
-            className="px-3.5 py-1.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer group shadow-xs active:scale-95"
+            className="px-3 py-1.5 min-h-[36px] rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer group shadow-xs active:scale-95"
             title="Exit Focus Mode (Esc)"
           >
             <span>Exit</span>
@@ -342,14 +342,14 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
         </div>
       </header>
 
-      {/* Main Focus Area */}
-      <div className="relative z-10 flex-1 flex overflow-hidden">
-        {/* Center Hero Stopwatch / Countdown Area */}
-        <div className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 pb-8 sm:pb-12 text-center max-w-4xl mx-auto overflow-y-auto">
+      {/* Main Focus Area: Column on <1024px (mobile/tablet), Row on lg+ */}
+      <main className="relative z-10 flex-1 flex flex-col lg:flex-row w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 gap-6 lg:gap-8 items-center lg:items-start justify-center">
+        {/* Center / Top Hero Stopwatch / Countdown Area */}
+        <div className="w-full flex-1 flex flex-col items-center justify-center text-center">
           {/* Task Title & Description */}
-          <div className="max-w-xl mb-4 sm:mb-6 space-y-1.5">
+          <div className="max-w-xl mb-4 sm:mb-6 space-y-1.5 px-2">
             <h1
-              className={`text-xl sm:text-3xl md:text-4xl font-extrabold tracking-tight transition-all ${
+              className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight transition-all break-words ${
                 task.completed
                   ? 'line-through text-zinc-500'
                   : 'text-white drop-shadow-[0_2px_12px_rgba(255,255,255,0.15)]'
@@ -358,16 +358,16 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
               {task.title}
             </h1>
             {task.description && (
-              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
+              <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-3">
                 {task.description}
               </p>
             )}
           </div>
 
-          {/* Circular SVG Timer Card */}
-          <div className="relative flex items-center justify-center mb-5 sm:mb-8 scale-90 sm:scale-100 transition-transform">
+          {/* Circular SVG Timer Card: scaled for mobile so it never clips */}
+          <div className="relative flex items-center justify-center mb-5 sm:mb-8 transition-transform">
             <svg
-              className="w-64 h-64 sm:w-76 sm:h-76 md:w-80 md:h-80 -rotate-90 transform drop-shadow-[0_0_25px_rgba(56,189,248,0.15)]"
+              className="w-56 h-56 sm:w-68 sm:h-68 md:w-72 md:h-72 -rotate-90 transform drop-shadow-[0_0_25px_rgba(56,189,248,0.15)]"
               viewBox="0 0 340 340"
             >
               {/* Background Track */}
@@ -401,15 +401,15 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
 
             {/* Inner Digits Display */}
             <div className="absolute flex flex-col items-center justify-center font-mono">
-              <div className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white flex items-center justify-center">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white flex items-center justify-center">
                 {hours > 0 && (
                   <>
                     <span>{String(hours).padStart(2, '0')}</span>
-                    <span className="text-zinc-600 px-1 animate-pulse">:</span>
+                    <span className="text-zinc-600 px-0.5 sm:px-1 animate-pulse">:</span>
                   </>
                 )}
                 <span>{String(minutes).padStart(2, '0')}</span>
-                <span className="text-zinc-600 px-1 animate-pulse">:</span>
+                <span className="text-zinc-600 px-0.5 sm:px-1 animate-pulse">:</span>
                 <span
                   className={
                     task.completed
@@ -423,7 +423,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
                 </span>
               </div>
 
-              <div className="mt-2 text-[10px] sm:text-[11px] uppercase tracking-widest text-zinc-400 font-sans font-semibold">
+              <div className="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] uppercase tracking-widest text-zinc-400 font-sans font-semibold">
                 {task.completed
                   ? '✓ COMPLETED'
                   : isPaused
@@ -435,13 +435,13 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
             </div>
           </div>
 
-          {/* Quick Action Controls - Elevated with clear buffer above the sound bar */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+          {/* Quick Action Controls */}
+          <div className="w-full max-w-md flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
             {/* Pause / Resume Button */}
             <button
               type="button"
               onClick={() => setIsPaused(!isPaused)}
-              className="px-4 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-sm"
+              className="px-4 py-2.5 min-h-[40px] rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
               {isPaused ? (
                 <>
@@ -460,7 +460,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
             <button
               type="button"
               onClick={() => handleAddMinutes(5)}
-              className="px-3.5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm"
+              className="px-3.5 py-2.5 min-h-[40px] rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
               <Plus className="w-3.5 h-3.5 text-sky-400" />
               <span>+5m</span>
@@ -470,7 +470,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
             <button
               type="button"
               onClick={() => handleAddMinutes(15)}
-              className="px-3.5 py-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-sm"
+              className="px-3.5 py-2.5 min-h-[40px] rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-xs"
             >
               <Plus className="w-3.5 h-3.5 text-sky-400" />
               <span>+15m</span>
@@ -480,7 +480,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
             <button
               type="button"
               onClick={handleCompleteTask}
-              className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
+              className={`px-5 py-2.5 min-h-[40px] rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer active:scale-95 shadow-lg ${
                 task.completed
                   ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border border-zinc-700'
                   : 'bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-white shadow-[0_0_20px_rgba(56,189,248,0.35)]'
@@ -492,132 +492,133 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
           </div>
         </div>
 
-        {/* Collapsible AI Subtask Drawer (Session Milestones) */}
-        <aside
-          className={`relative z-20 w-80 sm:w-96 border-l border-zinc-800/80 bg-[#090c14]/90 backdrop-blur-xl flex flex-col justify-between transition-all duration-300 ease-in-out ${
-            isDrawerOpen ? 'translate-x-0' : 'translate-x-full absolute right-0 inset-y-0'
-          }`}
-        >
-          {/* Drawer Header */}
-          <div className="p-4 border-b border-zinc-800/70 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                <Sparkles className="w-3.5 h-3.5" />
+        {/* Session Milestones Checklist Card: directly underneath timer on mobile, side-by-side on lg+ */}
+        {isDrawerOpen && (
+          <aside
+            className="w-full lg:w-96 mt-6 lg:mt-0 rounded-2xl border border-zinc-800/80 bg-[#090c14]/90 backdrop-blur-xl flex flex-col overflow-hidden shadow-2xl shrink-0"
+          >
+            {/* Drawer Header */}
+            <div className="p-4 border-b border-zinc-800/70 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
+                    Session Milestones
+                    <span className="text-[10px] font-semibold text-sky-400 bg-sky-950/80 border border-sky-800/50 px-1.5 py-0.2 rounded-md">
+                      AI
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-zinc-400">Actionable deep-work checklist</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-                  Session Milestones
-                  <span className="text-[10px] font-semibold text-sky-400 bg-sky-950/80 border border-sky-800/50 px-1.5 py-0.2 rounded-md">
-                    AI
-                  </span>
-                </h3>
-                <p className="text-[11px] text-zinc-400">Actionable deep-work checklist</p>
-              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsDrawerOpen(false)}
+                className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800/50 cursor-pointer"
+                title="Close milestones"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setIsDrawerOpen(false)}
-              className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800/50 cursor-pointer"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Milestone List Body */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-2.5 custom-scrollbar">
-            {isLoadingMilestones ? (
-              <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
-                <div className="w-7 h-7 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
-                <p className="text-xs text-zinc-400 font-medium animate-pulse">
-                  Gemini is breaking down your session...
-                </p>
-              </div>
-            ) : milestones.length === 0 ? (
-              <div className="py-10 text-center text-zinc-500 text-xs">
-                No milestones yet. Add your first step below.
-              </div>
-            ) : (
-              milestones.map((m) => (
-                <div
-                  key={m.id}
-                  onClick={() => handleToggleMilestone(m.id)}
-                  className={`p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 group ${
-                    m.done
-                      ? 'bg-zinc-900/40 border-zinc-800/60 text-zinc-500'
-                      : 'bg-zinc-900/80 border-zinc-800/90 hover:border-zinc-700 text-zinc-200'
-                  }`}
-                >
+            {/* Milestone List Body */}
+            <div className="overflow-y-auto p-4 space-y-2.5 max-h-[300px] lg:max-h-[380px] custom-scrollbar">
+              {isLoadingMilestones ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
+                  <div className="w-7 h-7 rounded-full border-2 border-sky-400 border-t-transparent animate-spin" />
+                  <p className="text-xs text-zinc-400 font-medium animate-pulse">
+                    Gemini is breaking down your session...
+                  </p>
+                </div>
+              ) : milestones.length === 0 ? (
+                <div className="py-10 text-center text-zinc-500 text-xs">
+                  No milestones yet. Add your first step below.
+                </div>
+              ) : (
+                milestones.map((m) => (
                   <div
-                    className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
+                    key={m.id}
+                    onClick={() => handleToggleMilestone(m.id)}
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 group ${
                       m.done
-                        ? 'bg-sky-500 border-sky-500 text-black'
-                        : 'border-zinc-600 group-hover:border-sky-400'
+                        ? 'bg-zinc-900/40 border-zinc-800/60 text-zinc-500'
+                        : 'bg-zinc-900/80 border-zinc-800/90 hover:border-zinc-700 text-zinc-200'
                     }`}
                   >
-                    {m.done && <Check className="w-3 h-3 stroke-[3]" />}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`text-xs leading-relaxed ${
-                        m.done ? 'line-through text-zinc-500' : 'text-zinc-200 font-medium'
+                    <div
+                      className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
+                        m.done
+                          ? 'bg-sky-500 border-sky-500 text-black'
+                          : 'border-zinc-600 group-hover:border-sky-400'
                       }`}
                     >
-                      {m.text}
-                    </p>
-                    {m.estimatedMins && (
-                      <span className="text-[10px] text-zinc-500 flex items-center gap-1 mt-1 font-mono">
-                        <Clock className="w-2.5 h-2.5" /> ~{m.estimatedMins} min
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+                      {m.done && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
 
-          {/* Quick Add Subtask Input */}
-          <div className="p-3 border-t border-zinc-800/80 bg-zinc-950/60">
-            <form onSubmit={handleAddMilestone} className="flex gap-1.5">
-              <input
-                type="text"
-                value={milestoneInput}
-                onChange={(e) => setMilestoneInput(e.target.value)}
-                placeholder="Add sub-task..."
-                className="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 outline-none focus:border-sky-500"
-              />
-              <button
-                type="submit"
-                className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-xs font-semibold cursor-pointer active:scale-95"
-              >
-                Add
-              </button>
-            </form>
-          </div>
-        </aside>
-      </div>
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className={`text-xs leading-relaxed ${
+                          m.done ? 'line-through text-zinc-500' : 'text-zinc-200 font-medium'
+                        }`}
+                      >
+                        {m.text}
+                      </p>
+                      {m.estimatedMins && (
+                        <span className="text-[10px] text-zinc-500 flex items-center gap-1 mt-1 font-mono">
+                          <Clock className="w-2.5 h-2.5" /> ~{m.estimatedMins} min
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Quick Add Subtask Input */}
+            <div className="p-3 border-t border-zinc-800/80 bg-zinc-950/60">
+              <form onSubmit={handleAddMilestone} className="flex gap-1.5">
+                <input
+                  type="text"
+                  value={milestoneInput}
+                  onChange={(e) => setMilestoneInput(e.target.value)}
+                  placeholder="Add sub-task..."
+                  className="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-200 placeholder-zinc-500 outline-none focus:border-sky-500 min-h-[36px]"
+                />
+                <button
+                  type="submit"
+                  className="px-3.5 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded-xl text-xs font-semibold cursor-pointer active:scale-95 min-h-[36px]"
+                >
+                  Add
+                </button>
+              </form>
+            </div>
+          </aside>
+        )}
+      </main>
 
       {/* Ambient Audio & Mood Engine Bottom Dock */}
-      <footer className="relative z-10 w-full px-6 py-4 border-t border-zinc-800/60 bg-[#07090e]/80 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="relative z-10 w-full px-4 sm:px-6 py-4 border-t border-zinc-800/60 bg-[#07090e]/90 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 mt-auto shrink-0">
         {/* Left: Sound Selector Toggles */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap w-full md:w-auto">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-400 mr-1">
             <Headphones className="w-3.5 h-3.5 text-sky-400" />
-            <span className="hidden sm:inline">Ambient Mood:</span>
+            <span className="text-xs">Ambient Mood:</span>
           </div>
 
           {/* Brown Noise */}
           <button
             type="button"
             onClick={() => handleSoundSelect('brown-noise')}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 min-h-[36px] rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
               activeSound === 'brown-noise'
                 ? 'bg-amber-500/20 border-amber-500/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
                 : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <Waves className="w-3 h-3 text-amber-400" />
+            <Waves className="w-3 h-3 text-amber-400 shrink-0" />
             <span>Brown Noise</span>
           </button>
 
@@ -625,13 +626,13 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
           <button
             type="button"
             onClick={() => handleSoundSelect('rain')}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 min-h-[36px] rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
               activeSound === 'rain'
                 ? 'bg-sky-500/20 border-sky-500/40 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.2)]'
                 : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <CloudRain className="w-3 h-3 text-sky-400" />
+            <CloudRain className="w-3 h-3 text-sky-400 shrink-0" />
             <span>Rain</span>
           </button>
 
@@ -639,13 +640,13 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
           <button
             type="button"
             onClick={() => handleSoundSelect('lofi')}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 min-h-[36px] rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
               activeSound === 'lofi'
                 ? 'bg-purple-500/20 border-purple-500/40 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.2)]'
                 : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <Music className="w-3 h-3 text-purple-400" />
+            <Music className="w-3 h-3 text-purple-400 shrink-0" />
             <span>Lo-Fi Beats</span>
           </button>
 
@@ -653,21 +654,21 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
           <button
             type="button"
             onClick={() => handleSoundSelect('cafe')}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 min-h-[36px] rounded-xl border text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
               activeSound === 'cafe'
                 ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <Coffee className="w-3 h-3 text-emerald-400" />
+            <Coffee className="w-3 h-3 text-emerald-400 shrink-0" />
             <span>Café</span>
           </button>
         </div>
 
         {/* Right: Audio Volume Slider & Audio Wave indicator */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center gap-3 w-full md:w-auto">
           {activeSound !== 'none' && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-zinc-900/90 rounded-lg border border-zinc-800">
+            <div className="flex items-center gap-1 px-2 py-1 bg-zinc-900/90 rounded-lg border border-zinc-800 shrink-0">
               <span className="w-1 h-3 bg-sky-400 rounded-full animate-[bounce_1s_infinite_100ms]" />
               <span className="w-1 h-4 bg-sky-400 rounded-full animate-[bounce_1s_infinite_300ms]" />
               <span className="w-1 h-2 bg-sky-400 rounded-full animate-[bounce_1s_infinite_200ms]" />
@@ -676,9 +677,9 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
 
           <div className="flex items-center gap-2">
             {soundVolume === 0 || activeSound === 'none' ? (
-              <VolumeX className="w-3.5 h-3.5 text-zinc-500" />
+              <VolumeX className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
             ) : (
-              <Volume2 className="w-3.5 h-3.5 text-zinc-400" />
+              <Volume2 className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
             )}
             <input
               type="range"
@@ -687,7 +688,7 @@ export const ZenFocusOverlay: React.FC<ZenFocusOverlayProps> = ({
               step="0.05"
               value={soundVolume}
               onChange={handleVolumeChange}
-              className="w-20 sm:w-28 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
+              className="w-24 sm:w-28 h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
             />
           </div>
         </div>
