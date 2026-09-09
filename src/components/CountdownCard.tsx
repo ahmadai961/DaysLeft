@@ -106,7 +106,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
     >
       <div className="space-y-2.5">
         {/* Top Bar: COUNTDOWN badge, Status badge, Category pill & Top Right Action buttons */}
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* COUNTDOWN Badge with Task Theme Color */}
             <span
@@ -170,12 +170,12 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
           </div>
 
           {/* Top Right Action Buttons: Zen Mode, Edit, Pin, Delete */}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1 shrink-0 ml-auto">
             {onOpenZenMode && (
               <button
                 type="button"
                 onClick={() => onOpenZenMode(task)}
-                className="px-2 py-0.5 text-[11px] font-bold text-sky-700 hover:text-sky-950 bg-sky-50 hover:bg-sky-100/80 border border-sky-200/80 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-2xs active:scale-95 group"
+                className="px-2 py-1 text-[11px] font-bold text-sky-700 hover:text-sky-950 bg-sky-50 hover:bg-sky-100/80 border border-sky-200/80 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-2xs active:scale-95 group min-h-[30px]"
                 title="Open full-screen Zen Focus Mode"
               >
                 <Flame className="w-3 h-3 text-sky-500 group-hover:scale-110 transition-transform" />
@@ -187,7 +187,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
               <button
                 type="button"
                 onClick={() => onTogglePinCountdown(task.id)}
-                className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                className={`p-1.5 rounded-lg border transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center ${
                   task.pinnedCountdown
                     ? 'bg-amber-50 border-amber-300 text-amber-600 shadow-2xs'
                     : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100'
@@ -201,7 +201,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
             <button
               type="button"
               onClick={() => onEditTask(task)}
-              className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-800 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-zinc-100 text-zinc-500 hover:text-zinc-800 transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center"
               title="Edit task"
             >
               <Edit3 className="w-3.5 h-3.5" />
@@ -211,7 +211,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
               <button
                 type="button"
                 onClick={() => onDeleteTask(task.id)}
-                className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-rose-50 hover:border-rose-200 text-zinc-400 hover:text-rose-600 transition-all cursor-pointer"
+                className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-rose-50 hover:border-rose-200 text-zinc-400 hover:text-rose-600 transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center"
                 title="Delete task"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -355,7 +355,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
               <button
                 type="button"
                 onClick={() => onToggleFocus && onToggleFocus(task.id)}
-                className="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer animate-pulse active:scale-[0.99]"
+                className="flex-1 py-2.5 px-3 min-h-[42px] rounded-xl text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer animate-pulse active:scale-[0.99]"
                 title="Pause active focus session"
               >
                 <Pause className="w-3.5 h-3.5 fill-current" />
@@ -366,7 +366,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
                 type="button"
                 onClick={() => onToggleFocus && onToggleFocus(task.id)}
                 disabled={isCompleted}
-                className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.99] ${
+                className={`flex-1 py-2.5 px-3 min-h-[42px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.99] ${
                   isCompleted
                     ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed'
                     : focusSeconds > 0
@@ -387,10 +387,10 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
             <button
               type="button"
               onClick={() => onRestartFocus && onRestartFocus(task.id)}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-90 text-white flex items-center justify-center shrink-0 shadow-xs border border-rose-600 transition-all cursor-pointer group"
+              className="w-10 h-10 sm:w-9 sm:h-9 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-90 text-white flex items-center justify-center shrink-0 shadow-xs border border-rose-600 transition-all cursor-pointer group min-w-[40px]"
               title="Restart focus timer & reset to 'Start Focus'"
             >
-              <RotateCcw className="w-3.5 h-3.5 group-hover:-rotate-45 transition-transform" />
+              <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5 group-hover:-rotate-45 transition-transform" />
             </button>
 
             {/* Stop & Log button if focus is currently running */}
@@ -398,7 +398,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
               <button
                 type="button"
                 onClick={() => onStopAndLogFocus(task.id)}
-                className="p-2 rounded-xl text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-all cursor-pointer active:scale-95 shrink-0"
+                className="p-2.5 min-h-[42px] rounded-xl text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-700 border border-zinc-200 transition-all cursor-pointer active:scale-95 shrink-0"
                 title="Stop and log focus session"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
@@ -410,7 +410,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
           <button
             type="button"
             onClick={() => handleComplete(task.id)}
-            className={`py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.99] ${
+            className={`py-2.5 px-3 min-h-[42px] rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.99] ${
               isCompleted
                 ? 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 border border-zinc-200'
                 : 'bg-zinc-900 text-white hover:bg-zinc-800 shadow-xs'
