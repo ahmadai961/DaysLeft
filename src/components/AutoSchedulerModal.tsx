@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Task, TaskCategory, TaskPriority } from '../types';
 import {
   Sparkles,
@@ -8,12 +8,16 @@ import {
   Check,
   RotateCcw,
   ArrowRight,
-  AlertCircle,
   CheckCircle2,
-  Tag,
   Zap,
+  Key,
+  Info,
+  ShieldCheck,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+
+// WARNING: Client-side Gemini API key usage requested by user.
+// In-browser key access utilizes VITE_GEMINI_API_KEY or user-provided localStorage.
 
 export interface GeneratedScheduleEvent {
   title: string;
@@ -34,9 +38,50 @@ const SUGGESTED_CHIPS = [
   'Prep for exam next week with 3 study sessions',
   'Daily workout schedule for the next 5 days',
   'Launch project sprint with 3 milestone countdowns',
-  'Review personal finances by Friday evening',
+  'Review personal finances tomorrow at 6pm for 2 hours',
   '7-day morning mindfulness & reading routine',
 ];
+
+/**
+ * Retrieve Gemini API Key in the prioritized order requested:
+ * 1. import.meta.env.VITE_GEMINI_API_KEY
+ * 2. process.env.GEMINI_API_KEY
+ * 3. localStorage.getItem('gemini_api_key')
+ */
+export function getGeminiApiKey(): string {
+  // 1. import.meta.env.VITE_GEMINI_API_KEY
+  try {
+    const metaEnv = (import.meta as any)?.env;
+    if (metaEnv?.VITE_GEMINI_API_KEY) {
+      const key = String(metaEnv.VITE_GEMINI_API_KEY).trim();
+      if (key) return key;
+    }
+  } catch {
+    // browser context fallback
+  }
+
+  // 2. process.env.GEMINI_API_KEY
+  try {
+    if (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) {
+      const key = process.env.GEMINI_API_KEY.trim();
+      if (key && key !== 'MY_GEMINI_API_KEY') return key;
+    }
+  } catch {
+    // browser context fallback
+  }
+
+  // 3. localStorage.getItem('gemini_api_key')
+  try {
+    const key = localStorage.getItem('gemini_api_key');
+    if (key && key.trim()) {
+      return key.trim();
+    }
+  } catch {
+    // localStorage inaccessible
+  }
+
+  return '';
+}
 
 // Helper to normalize category
 function normalizeCategory(cat: string): TaskCategory {
@@ -49,11 +94,12 @@ function normalizeCategory(cat: string): TaskCategory {
     c.includes('workout') ||
     c.includes('fitness') ||
     c.includes('gym') ||
-    c.includes('run')
+    c.includes('run') ||
+    c.includes('exercise')
   ) {
     return 'Health';
   }
-  if (c.includes('project') || c.includes('code') || c.includes('dev') || c.includes('sprint')) {
+  if (c.includes('project') || c.includes('code') || c.includes('dev') || c.includes('sprint') || c.includes('build')) {
     return 'Project';
   }
   if (c.includes('work') || c.includes('client') || c.includes('job') || c.includes('meeting')) {
@@ -62,7 +108,7 @@ function normalizeCategory(cat: string): TaskCategory {
   if (c.includes('finance') || c.includes('budget') || c.includes('tax') || c.includes('money')) {
     return 'Finance';
   }
-  if (c.includes('personal') || c.includes('habit') || c.includes('home')) {
+  if (c.includes('personal') || c.includes('habit') || c.includes('home') || c.includes('mindful')) {
     return 'Personal';
   }
   return 'Other';
@@ -77,7 +123,7 @@ function normalizePriority(pri?: string): TaskPriority {
   return 'medium';
 }
 
-// Helper to format ISO date-time into readable string
+// Helper to format ISO date-time into readable strings
 function formatTargetDateTime(targetDateStr: string): {
   dateFormatted: string;
   timeFormatted: string;
@@ -104,7 +150,6 @@ function formatTargetDateTime(targetDateStr: string): {
       minute: '2-digit',
     });
 
-    // Relative countdown calculation
     const now = new Date();
     const diffMs = d.getTime() - now.getTime();
     let relativeCountdown = '';
@@ -134,6 +179,241 @@ function formatTargetDateTime(targetDateStr: string): {
   }
 }
 
+/**
+ * Offline Smart Heuristic Parser
+ * Automatically parses time, date, duration, and session count intents directly
+ * in the browser so the user is NEVER blocked even when offline or without an API key.
+ */
+export function parseSmartHeuristicSchedule(prompt: string, referenceDate: Date = new Date()): GeneratedScheduleEvent[] {
+  const text = prompt.toLowerCase();
+  const currentYear = referenceDate.getFullYear();
+
+  // 1. Detect category
+  let category = 'other';
+  if (/exam|study|quiz|test|revise|revision|class|lecture|read|learn|homework/.test(text)) {
+    category = 'study';
+  } else if (/workout|gym|run|fitness|exercise|leg day|push day|pull day|cardio|training/.test(text)) {
+    category = 'health';
+  } else if (/project|code|sprint|launch|build|feature|mvp|deploy|refactor|design/.test(text)) {
+    category = 'project';
+  } else if (/work|client|meeting|presentation|quarterly|sync|brief/.test(text)) {
+    category = 'work';
+  } else if (/finance|budget|tax|invoice|audit|money|expense|savings/.test(text)) {
+    category = 'finance';
+  } else if (/habit|routine|mindful|meditat|clean|organize|personal/.test(text)) {
+    category = 'personal';
+  }
+
+  // 2. Detect duration in minutes
+  let durationMinutes = 60;
+  const hoursMatch = prompt.match(/(\d+(?:\.\d+)?)\s*(?:hours?|hrs?|hr|h)\b/i);
+  const minsMatch = prompt.match(/(\d+)\s*(?:minutes?|mins?|min|m)\b/i);
+
+  if (hoursMatch) {
+    durationMinutes = Math.round(parseFloat(hoursMatch[1]) * 60);
+  } else if (minsMatch) {
+    durationMinutes = parseInt(minsMatch[1], 10);
+  } else if (category === 'health') {
+    durationMinutes = 45;
+  } else if (category === 'project') {
+    durationMinutes = 90;
+  }
+
+  // 3. Detect time of day (hour & minute)
+  let targetHour = 18; // Default to 6:00 PM
+  let targetMinute = 0;
+
+  const timeMatch = prompt.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/i);
+  if (timeMatch) {
+    let hour = parseInt(timeMatch[1], 10);
+    const minute = timeMatch[2] ? parseInt(timeMatch[2], 10) : 0;
+    const isPm = timeMatch[3].toLowerCase() === 'pm';
+    if (isPm && hour < 12) hour += 12;
+    if (!isPm && hour === 12) hour = 0;
+    targetHour = hour;
+    targetMinute = minute;
+  } else if (/morning\b/i.test(prompt)) {
+    targetHour = 9;
+  } else if (/afternoon\b/i.test(prompt)) {
+    targetHour = 14;
+  } else if (/evening\b/i.test(prompt)) {
+    targetHour = 18;
+  } else if (/night\b/i.test(prompt)) {
+    targetHour = 20;
+  } else if (/noon\b/i.test(prompt)) {
+    targetHour = 12;
+  }
+
+  // 4. Detect target base date
+  let targetDateObj = new Date(referenceDate);
+  let explicitTargetFound = false;
+
+  // Month Names: e.g. "Oct 20", "October 20th", "Nov 5"
+  const monthNames = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  const monthRegex = new RegExp(`(${monthNames.join('|')})[a-z]*\\s+(\\d{1,2})(?:st|nd|rd|th)?\\b`, 'i');
+  const monthMatch = prompt.match(monthRegex);
+
+  if (monthMatch) {
+    const monthIndex = monthNames.findIndex((m) => monthMatch[1].toLowerCase().startsWith(m));
+    const dayNumber = parseInt(monthMatch[2], 10);
+    if (monthIndex !== -1 && dayNumber >= 1 && dayNumber <= 31) {
+      targetDateObj = new Date(currentYear, monthIndex, dayNumber, targetHour, targetMinute, 0);
+      if (targetDateObj.getTime() < referenceDate.getTime()) {
+        targetDateObj.setFullYear(currentYear + 1);
+      }
+      explicitTargetFound = true;
+    }
+  } else if (/\btomorrow\b/i.test(prompt)) {
+    targetDateObj = new Date(referenceDate);
+    targetDateObj.setDate(targetDateObj.getDate() + 1);
+    targetDateObj.setHours(targetHour, targetMinute, 0, 0);
+    explicitTargetFound = true;
+  } else if (/in\s+(\d+)\s+days?\b/i.test(prompt)) {
+    const inDays = parseInt(prompt.match(/in\s+(\d+)\s+days?\b/i)![1], 10);
+    targetDateObj = new Date(referenceDate);
+    targetDateObj.setDate(targetDateObj.getDate() + inDays);
+    targetDateObj.setHours(targetHour, targetMinute, 0, 0);
+    explicitTargetFound = true;
+  } else if (/next\s+week\b/i.test(prompt)) {
+    targetDateObj = new Date(referenceDate);
+    targetDateObj.setDate(targetDateObj.getDate() + 7);
+    targetDateObj.setHours(targetHour, targetMinute, 0, 0);
+    explicitTargetFound = true;
+  } else {
+    // Check for days of week: "on Friday", "next Tuesday"
+    const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const dayMatch = prompt.match(/(?:next|on|this)?\s*(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b/i);
+    if (dayMatch) {
+      const targetDayIndex = daysOfWeek.indexOf(dayMatch[1].toLowerCase());
+      if (targetDayIndex !== -1) {
+        const currentDayIndex = referenceDate.getDay();
+        let daysToAdd = (targetDayIndex - currentDayIndex + 7) % 7;
+        if (daysToAdd === 0) daysToAdd = 7; // Next occurrence
+        targetDateObj = new Date(referenceDate);
+        targetDateObj.setDate(targetDateObj.getDate() + daysToAdd);
+        targetDateObj.setHours(targetHour, targetMinute, 0, 0);
+        explicitTargetFound = true;
+      }
+    }
+  }
+
+  // 5. Detect number of sessions
+  let sessionCount = 1;
+  const countMatch = prompt.match(/(\d+)\s*(?:study\s*)?(?:sessions?|parts?|blocks?|days?|workouts?|sprints?|milestones?)/i);
+  if (countMatch) {
+    sessionCount = Math.min(7, Math.max(1, parseInt(countMatch[1], 10)));
+  } else if (/break\s*down|schedule|routine|sprint|curriculum/i.test(prompt)) {
+    sessionCount = 3;
+  }
+
+  // Helper to format ISO local string
+  const formatIso = (d: Date): string => {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}:00`;
+  };
+
+  // Clean prompt for task subject
+  const cleanedPrompt = prompt
+    .replace(/^(prep for|prepare for|i have an|i have a|break down a|schedule a|daily|please schedule)\s*/i, '')
+    .replace(/\bwith \d+ (?:study )?sessions?\b/i, '')
+    .replace(/\bfor the next \d+ days?\b/i, '')
+    .replace(/\btomorrow\b/i, '')
+    .replace(/\bat \d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i, '')
+    .replace(/\bfor \d+\s*(?:hours?|minutes?|hrs?|mins?)\b/i, '')
+    .trim();
+
+  const baseTitle = cleanedPrompt.length > 2
+    ? cleanedPrompt.charAt(0).toUpperCase() + cleanedPrompt.slice(1)
+    : prompt.trim();
+
+  // If a single session was parsed
+  if (sessionCount === 1) {
+    if (!explicitTargetFound) {
+      targetDateObj.setDate(targetDateObj.getDate() + 1);
+      targetDateObj.setHours(targetHour, targetMinute, 0, 0);
+    }
+    return [
+      {
+        title: baseTitle,
+        targetDate: formatIso(targetDateObj),
+        durationMinutes,
+        category,
+        description: `Dedicated ${durationMinutes}m session for: ${baseTitle}`,
+        priority: 'high',
+      },
+    ];
+  }
+
+  // If multiple sessions: space them leading up to the target date or across consecutive days
+  const events: GeneratedScheduleEvent[] = [];
+  const totalDaysSpan = explicitTargetFound
+    ? Math.max(1, Math.round((targetDateObj.getTime() - referenceDate.getTime()) / (1000 * 60 * 60 * 24)))
+    : sessionCount * 2;
+
+  const dayInterval = Math.max(1, Math.floor(totalDaysSpan / sessionCount));
+
+  for (let i = 0; i < sessionCount; i++) {
+    const sessionDate = new Date(referenceDate);
+    // If explicit target is set, pace sessions leading up to the target
+    if (explicitTargetFound && totalDaysSpan > sessionCount) {
+      const offsetDays = Math.max(1, Math.round(((i + 1) * totalDaysSpan) / sessionCount));
+      sessionDate.setDate(referenceDate.getDate() + offsetDays);
+    } else {
+      sessionDate.setDate(referenceDate.getDate() + (i + 1) * dayInterval);
+    }
+    sessionDate.setHours(targetHour, targetMinute, 0, 0);
+
+    let stageTitle = `Session ${i + 1}`;
+    let stageDesc = `Focused block ${i + 1} of ${sessionCount}`;
+
+    if (category === 'study') {
+      const studyStages = [
+        'Core Fundamentals & Concept Mapping',
+        'Deep Practice & Problem Sets',
+        'Mock Exam Sprint & Final Review',
+        'Consolidation & Weak Point Revision',
+        'Final Walkthrough & Formula Recall',
+      ];
+      stageTitle = studyStages[i % studyStages.length];
+      stageDesc = `Study block for ${baseTitle}: ${stageTitle}`;
+    } else if (category === 'health') {
+      const workoutStages = [
+        'Upper Body Strength & Core',
+        'Lower Body Power & Mobility',
+        'Conditioning & Interval Cardio',
+        'Active Recovery & Flex Stretch',
+        'Full Body Peak Performance',
+      ];
+      stageTitle = workoutStages[i % workoutStages.length];
+      stageDesc = `Workout block: ${stageTitle}`;
+    } else if (category === 'project') {
+      const projectStages = [
+        'Architecture & Core Implementation',
+        'Feature Integration & Component Logic',
+        'Polish, Testing & Launch Sprint',
+        'Optimization & Bug Fixes',
+      ];
+      stageTitle = projectStages[i % projectStages.length];
+      stageDesc = `Project milestone: ${stageTitle}`;
+    }
+
+    events.push({
+      title: `${baseTitle}: ${stageTitle}`,
+      targetDate: formatIso(sessionDate),
+      durationMinutes,
+      category,
+      description: stageDesc,
+      priority: i === sessionCount - 1 ? 'urgent' : i === 0 ? 'medium' : 'high',
+    });
+  }
+
+  return events;
+}
+
 export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
   isOpen,
   onClose,
@@ -141,50 +421,169 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
 }) => {
   const [goalPrompt, setGoalPrompt] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [generatedEvents, setGeneratedEvents] = useState<GeneratedScheduleEvent[]>([]);
   const [selectedEventIndices, setSelectedEventIndices] = useState<Set<number>>(new Set());
 
+  // API Key management
+  const [currentApiKey, setCurrentApiKey] = useState<string>(() => getGeminiApiKey());
+  const [keyInputValue, setKeyInputValue] = useState<string>('');
+  const [showKeyInput, setShowKeyInput] = useState<boolean>(false);
+  const [keySaveSuccess, setKeySaveSuccess] = useState<boolean>(false);
+  const [activeSource, setActiveSource] = useState<'gemini' | 'heuristic' | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
+
+  // Sync key when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const key = getGeminiApiKey();
+      setCurrentApiKey(key);
+      if (!key) {
+        setShowKeyInput(true);
+      }
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
+
+  const handleSaveApiKey = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanKey = keyInputValue.trim();
+    if (!cleanKey) return;
+
+    try {
+      localStorage.setItem('gemini_api_key', cleanKey);
+      setCurrentApiKey(cleanKey);
+      setKeySaveSuccess(true);
+      setKeyInputValue('');
+      setTimeout(() => setKeySaveSuccess(false), 3000);
+      setInfoMessage('API key saved to browser storage. Ready for direct Gemini generation!');
+    } catch (err) {
+      console.warn('Failed to save API key to localStorage', err);
+    }
+  };
+
+  const handleClearApiKey = () => {
+    try {
+      localStorage.removeItem('gemini_api_key');
+      setCurrentApiKey('');
+      setShowKeyInput(true);
+      setInfoMessage('API key removed from browser storage.');
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!goalPrompt.trim() || isLoading) return;
 
     setIsLoading(true);
-    setError(null);
+    setInfoMessage(null);
     setGeneratedEvents([]);
 
+    const todayDateIso = new Date().toISOString();
+    const apiKey = currentApiKey || getGeminiApiKey();
+
+    // If no API key is available, seamlessly use the smart heuristic engine
+    if (!apiKey) {
+      const heuristicResults = parseSmartHeuristicSchedule(goalPrompt.trim(), new Date());
+      setGeneratedEvents(heuristicResults);
+      setSelectedEventIndices(new Set(heuristicResults.map((_, i) => i)));
+      setActiveSource('heuristic');
+      setShowKeyInput(true);
+      setInfoMessage(
+        'Generated using the browser offline heuristic parser. Enter a Gemini API Key below for generative AI pacing.'
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    // Direct Gemini Browser API Call (no backend routes used)
     try {
-      const response = await fetch('/api/auto-schedule', {
+      const systemInstructionText = `You are an expert AI Scheduling Assistant.
+The current reference date and time is: ${todayDateIso}.
+Break down the user's goal into an array of 2 to 6 concrete, sequential countdown sessions leading up to the target.
+Rules:
+1. Every targetDate MUST be an ISO 8601 string: 'YYYY-MM-DDTHH:mm:00'. Ensure dates are in the future relative to ${todayDateIso}.
+2. durationMinutes must be a number (e.g., 30, 45, 60, 90, 120).
+3. category must be one of: 'study', 'health', 'work', 'project', 'finance', 'personal', 'other'.
+4. priority must be: 'low', 'medium', 'high', or 'urgent'.
+5. Return ONLY a valid JSON array of session objects.`;
+
+      const promptPayload = {
+        contents: [
+          {
+            parts: [
+              {
+                text: `${systemInstructionText}\n\nUser Goal: "${goalPrompt.trim()}"`,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          responseMimeType: 'application/json',
+          temperature: 0.3,
+        },
+      };
+
+      const directUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+      const response = await fetch(directUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          prompt: goalPrompt.trim(),
-          todayDate: new Date().toISOString(),
-        }),
+        body: JSON.stringify(promptPayload),
       });
 
       if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
+        // If API key is invalid or request fails, do not throw a red error screen.
+        // Prompt for key input and run heuristic fallback immediately so user is never blocked!
+        const errJson = await response.json().catch(() => ({}));
+        console.warn('Gemini API call returned non-200:', response.status, errJson);
+
+        setShowKeyInput(true);
+        const fallbackResults = parseSmartHeuristicSchedule(goalPrompt.trim(), new Date());
+        setGeneratedEvents(fallbackResults);
+        setSelectedEventIndices(new Set(fallbackResults.map((_, i) => i)));
+        setActiveSource('heuristic');
+        setInfoMessage(
+          `Gemini responded with status ${response.status}. Generated via Smart Heuristic Engine so you can proceed without interruption.`
+        );
+        return;
       }
 
       const data = await response.json();
-      const events: GeneratedScheduleEvent[] = data.events || [];
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const cleanJson = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
-      if (!Array.isArray(events) || events.length === 0) {
-        throw new Error('No sessions could be formulated. Please try rephrasing your goal.');
+      let parsedEvents: GeneratedScheduleEvent[] = [];
+      try {
+        parsedEvents = JSON.parse(cleanJson);
+      } catch {
+        parsedEvents = [];
       }
 
-      setGeneratedEvents(events);
-      // Default to selecting all generated events
-      setSelectedEventIndices(new Set(events.map((_, i) => i)));
-    } catch (err: any) {
-      console.error('Error generating auto-schedule:', err);
-      setError(
-        err?.message || 'Failed to connect to the scheduling agent. Please try again.'
+      if (Array.isArray(parsedEvents) && parsedEvents.length > 0) {
+        setGeneratedEvents(parsedEvents);
+        setSelectedEventIndices(new Set(parsedEvents.map((_, i) => i)));
+        setActiveSource('gemini');
+      } else {
+        // Fallback to heuristic parser if model returned unexpected format
+        const fallbackResults = parseSmartHeuristicSchedule(goalPrompt.trim(), new Date());
+        setGeneratedEvents(fallbackResults);
+        setSelectedEventIndices(new Set(fallbackResults.map((_, i) => i)));
+        setActiveSource('heuristic');
+      }
+    } catch (netErr: any) {
+      console.warn('Direct Gemini call failed or offline:', netErr);
+      // Offline fallback
+      const fallbackResults = parseSmartHeuristicSchedule(goalPrompt.trim(), new Date());
+      setGeneratedEvents(fallbackResults);
+      setSelectedEventIndices(new Set(fallbackResults.map((_, i) => i)));
+      setActiveSource('heuristic');
+      setInfoMessage(
+        'Offline or network limitation detected. Created using offline smart heuristics.'
       );
     } finally {
       setIsLoading(false);
@@ -220,15 +619,14 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
       let datePart = '';
       let timePart = '18:00';
 
-      if (evt.targetDate.includes('T')) {
+      if (evt.targetDate && evt.targetDate.includes('T')) {
         const parts = evt.targetDate.split('T');
         datePart = parts[0];
         timePart = parts[1].substring(0, 5);
       } else {
-        datePart = evt.targetDate;
+        datePart = evt.targetDate || '';
       }
 
-      // If datePart is somehow empty, fall back to today + 1 day
       if (!datePart || !datePart.includes('-')) {
         const fallbackDate = new Date();
         fallbackDate.setDate(fallbackDate.getDate() + idx + 1);
@@ -256,7 +654,7 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
         category,
         completed: false,
         createdAt: nowIso,
-        pinnedCountdown: idx === 0, // Pin the earliest countdown session
+        pinnedCountdown: idx === 0,
         focusSeconds: 0,
         isFocusRunning: false,
         checklist: [
@@ -281,7 +679,6 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
 
     onAcceptSchedule(createdTasks);
 
-    // Trigger celebratory confetti
     try {
       confetti({
         particleCount: 50,
@@ -290,7 +687,7 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
         colors: ['#38bdf8', '#818cf8', '#34d399', '#f59e0b'],
       });
     } catch {
-      // Ignored if confetti fails in iframe
+      // Confetti fallback
     }
 
     onClose();
@@ -299,7 +696,8 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
   const handleReset = () => {
     setGeneratedEvents([]);
     setSelectedEventIndices(new Set());
-    setError(null);
+    setActiveSource(null);
+    setInfoMessage(null);
   };
 
   return (
@@ -321,27 +719,100 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
                   AI Auto-Scheduler
                 </h2>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-indigo-500/30 text-indigo-200 border border-indigo-400/20">
-                  Gemini Agent
+                  Client-Side Engine
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400 font-medium">
-                Decompose any goal or exam into scheduled countdown sessions
+                Direct browser AI decomposition & smart offline heuristics
               </p>
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-            title="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowKeyInput(!showKeyInput)}
+              className="px-2 py-1 text-[11px] font-semibold text-zinc-300 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 rounded-lg flex items-center gap-1 border border-zinc-700/60 cursor-pointer"
+              title="Configure API Key"
+            >
+              <Key className="w-3 h-3 text-amber-400" />
+              <span>{currentApiKey ? 'Key Active' : 'Set Key'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              title="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </header>
 
         {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+          {/* IN-APP KEY SETUP CARD (If requested, missing, or toggled) */}
+          {showKeyInput && (
+            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2.5 animate-in fade-in">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
+                  <Key className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Gemini API Key Configuration</span>
+                </div>
+                {currentApiKey && (
+                  <button
+                    type="button"
+                    onClick={handleClearApiKey}
+                    className="text-[10px] text-rose-600 hover:underline font-semibold cursor-pointer"
+                  >
+                    Remove Saved Key
+                  </button>
+                )}
+              </div>
+
+              <form onSubmit={handleSaveApiKey} className="flex gap-2">
+                <input
+                  type="password"
+                  value={keyInputValue}
+                  onChange={(e) => setKeyInputValue(e.target.value)}
+                  placeholder={currentApiKey ? '•••••••••••••••• (Key saved in localStorage)' : 'Enter your Gemini API Key (e.g. AIza...)'}
+                  className="flex-1 bg-white border border-zinc-300 rounded-lg px-3 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-900 shadow-2xs font-mono"
+                />
+                <button
+                  type="submit"
+                  disabled={!keyInputValue.trim()}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    keyInputValue.trim()
+                      ? 'bg-zinc-900 hover:bg-zinc-800 text-white'
+                      : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
+                  }`}
+                >
+                  Save
+                </button>
+              </form>
+
+              {keySaveSuccess && (
+                <p className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Key successfully saved into localStorage!
+                </p>
+              )}
+
+              <p className="text-[11px] text-zinc-500 leading-normal">
+                Stored in browser <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[10px]">localStorage.getItem('gemini_api_key')</code>. Direct requests are sent straight from your browser to Google Gen AI without backend server routes.
+              </p>
+            </div>
+          )}
+
+          {/* Informational Message Banner */}
+          {infoMessage && (
+            <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl flex items-start gap-2.5 text-xs text-amber-900 animate-in fade-in">
+              <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+              <p className="text-[11px] leading-relaxed">{infoMessage}</p>
+            </div>
+          )}
+
           {/* STEP 1: Prompt Input & Suggested Chips (if not previewing) */}
           {generatedEvents.length === 0 ? (
             <div className="space-y-4">
@@ -364,7 +835,7 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setGoalPrompt('')}
-                      className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600 text-xs font-bold p-1"
+                      className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600 text-xs font-bold p-1 cursor-pointer"
                     >
                       Clear
                     </button>
@@ -391,17 +862,6 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
                     ))}
                   </div>
                 </div>
-
-                {/* Error Banner */}
-                {error && (
-                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-xs text-rose-700 animate-in fade-in">
-                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
-                    <div>
-                      <p className="font-semibold">Scheduling Agent Notice</p>
-                      <p className="text-[11px] text-rose-600">{error}</p>
-                    </div>
-                  </div>
-                )}
 
                 {/* Submit Action */}
                 <div className="pt-2 flex items-center justify-end gap-2">
@@ -442,10 +902,8 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
               <div className="p-3.5 bg-sky-50/70 border border-sky-100 rounded-xl text-sky-950 flex items-start gap-2.5">
                 <CalendarIcon className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
                 <p className="text-xs leading-relaxed text-sky-800">
-                  <strong className="font-semibold text-sky-900">How it works: </strong>
-                  The agent reviews today's date, computes the required pacing, and generates
-                  concrete countdown sessions with target dates, durations, and deep-work
-                  milestones ready to append to your calendar.
+                  <strong className="font-semibold text-sky-900">Direct Client Intelligence: </strong>
+                  Calls Google Gen AI directly from your browser. Includes an offline intent parser that converts dates (e.g. "tomorrow", "Oct 20"), times ("6pm"), and durations ("2 hours") without requiring backend server routes.
                 </p>
               </div>
             </div>
@@ -459,9 +917,20 @@ export const AutoSchedulerModal: React.FC<AutoSchedulerModalProps> = ({
                     <Check className="w-3.5 h-3.5" />
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900">
-                      The AI generated {generatedEvents.length} countdown sessions:
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs sm:text-sm font-bold text-zinc-900">
+                        Formulated {generatedEvents.length} countdown sessions:
+                      </h3>
+                      {activeSource === 'gemini' ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                          ⚡ Direct Gemini AI
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          ✨ Smart Heuristic Parser
+                        </span>
+                      )}
+                    </div>
                     <p className="text-[11px] text-zinc-500">
                       {selectedEventIndices.size} of {generatedEvents.length} selected to add
                     </p>
