@@ -364,6 +364,8 @@ export default function App() {
           <div className="lg:col-span-5 xl:col-span-5 space-y-6">
             <CountdownList
               tasks={filteredTasks}
+              totalTasksCount={tasks.length}
+              onAddNewTask={() => handleOpenNewTaskModal(selectedDateStr)}
               onSelectTask={(task) => handleEditTask(task)}
               onSelectDate={handleSelectDate}
               onToggleComplete={handleToggleComplete}

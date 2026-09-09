@@ -1,11 +1,13 @@
 import React from 'react';
 import { Task, FilterTab } from '../types';
 import { calculateTaskCountdown } from '../utils/dateUtils';
-import { Clock } from 'lucide-react';
+import { Clock, CalendarPlus, Plus, Calendar } from 'lucide-react';
 import { CountdownCard } from './CountdownCard';
 
 interface CountdownListProps {
   tasks: Task[];
+  totalTasksCount?: number;
+  onAddNewTask?: () => void;
   onSelectTask: (task: Task) => void;
   onSelectDate: (dateStr: string) => void;
   onToggleComplete: (taskId: string) => void;
@@ -23,6 +25,8 @@ interface CountdownListProps {
 
 export const CountdownList: React.FC<CountdownListProps> = ({
   tasks,
+  totalTasksCount,
+  onAddNewTask,
   onSelectTask,
   onSelectDate,
   onToggleComplete,
@@ -46,6 +50,9 @@ export const CountdownList: React.FC<CountdownListProps> = ({
     if (activeFilter === 'upcoming') return !t.completed && !countdown.isOverdue;
     return true; // 'all'
   });
+
+  // Check whether the user has zero tasks in total
+  const isOverallEmpty = totalTasksCount !== undefined ? totalTasksCount === 0 : tasks.length === 0;
 
   // Sort by urgency (nearest deadline first)
   const sortedTasks = [...filteredTasks].sort((a, b) => {
@@ -71,29 +78,64 @@ export const CountdownList: React.FC<CountdownListProps> = ({
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-xl overflow-x-auto">
-          {(['all', 'upcoming', 'today', 'overdue', 'completed'] as FilterTab[]).map((tab) => (
-            <button
-              type="button"
-              key={tab}
-              onClick={() => onFilterChange(tab)}
-              className={`px-2.5 py-1 text-xs font-semibold rounded-lg capitalize whitespace-nowrap transition-all cursor-pointer ${
-                activeFilter === tab
-                  ? 'bg-white text-zinc-900 shadow-xs'
-                  : 'text-zinc-500 hover:text-zinc-800'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+        {!isOverallEmpty && (
+          <div className="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-xl overflow-x-auto">
+            {(['all', 'upcoming', 'today', 'overdue', 'completed'] as FilterTab[]).map((tab) => (
+              <button
+                type="button"
+                key={tab}
+                onClick={() => onFilterChange(tab)}
+                className={`px-2.5 py-1 text-xs font-semibold rounded-lg capitalize whitespace-nowrap transition-all cursor-pointer ${
+                  activeFilter === tab
+                    ? 'bg-white text-zinc-900 shadow-xs'
+                    : 'text-zinc-500 hover:text-zinc-800'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Grid of Countdown Bars */}
-      {sortedTasks.length === 0 ? (
+      {/* Zero tasks total: clean empty-state placeholder */}
+      {isOverallEmpty ? (
+        <div className="py-10 px-4 text-center flex flex-col items-center justify-center border-2 border-dashed border-zinc-200/90 rounded-2xl bg-zinc-50/60">
+          <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-center mb-3 text-zinc-700">
+            <CalendarPlus className="w-6 h-6 text-zinc-800" />
+          </div>
+          <h3 className="text-sm font-bold text-zinc-900 mb-1">
+            No countdowns or tasks yet
+          </h3>
+          <p className="text-xs text-zinc-500 max-w-[280px] leading-relaxed mb-4">
+            Add your first task or select a date on the calendar to start tracking live countdowns and focus sessions.
+          </p>
+          {onAddNewTask && (
+            <button
+              type="button"
+              onClick={onAddNewTask}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-white shadow-xs transition-all cursor-pointer active:scale-95"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Your First Task</span>
+            </button>
+          )}
+          <div className="mt-4 pt-3 border-t border-zinc-200/70 w-full max-w-[260px] flex items-center justify-center gap-1.5 text-[11px] text-zinc-400">
+            <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+            <span>Click any day on the calendar to schedule</span>
+          </div>
+        </div>
+      ) : sortedTasks.length === 0 ? (
         <div className="py-10 text-center text-zinc-400">
           <Clock className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
-          <p className="text-xs font-medium">No tasks found in this view filter.</p>
+          <p className="text-xs font-medium">No tasks found for the '{activeFilter}' filter.</p>
+          <button
+            type="button"
+            onClick={() => onFilterChange('all')}
+            className="mt-2 text-xs font-semibold text-zinc-700 hover:text-zinc-900 underline cursor-pointer"
+          >
+            Show All Countdowns
+          </button>
         </div>
       ) : (
         <div className="space-y-3">
@@ -122,4 +164,5 @@ export const CountdownList: React.FC<CountdownListProps> = ({
     </div>
   );
 };
+
 
