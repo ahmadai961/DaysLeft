@@ -1,6 +1,6 @@
 {
   "name": "Task Calendar & Countdown",
-  "description": "A minimalist white calendar to schedule tasks on any date with real-time countdown timers.",
+  "description": "A minimalist white calendar to schedule tasks on any date with real-time countdown timers and an AI Auto-Scheduler agent.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

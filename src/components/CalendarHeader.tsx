@@ -8,6 +8,7 @@ import {
   Search,
   CheckCircle2,
   Clock,
+  Sparkles,
 } from 'lucide-react';
 
 interface CalendarHeaderProps {
@@ -18,6 +19,7 @@ interface CalendarHeaderProps {
   viewMode: CalendarViewMode;
   onViewModeChange: (mode: CalendarViewMode) => void;
   onOpenNewTaskModal: () => void;
+  onOpenAutoScheduler: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   totalTaskCount: number;
@@ -32,6 +34,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   viewMode,
   onViewModeChange,
   onOpenNewTaskModal,
+  onOpenAutoScheduler,
   searchQuery,
   onSearchChange,
   totalTaskCount,
@@ -92,6 +95,18 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                 </button>
               )}
             </div>
+
+            {/* AI Auto-Scheduler Action Button */}
+            <button
+              type="button"
+              onClick={onOpenAutoScheduler}
+              className="px-2.5 sm:px-3.5 py-2 min-h-[38px] sm:min-h-[40px] bg-gradient-to-r from-indigo-50 to-sky-50 hover:from-indigo-100 hover:to-sky-100 border border-indigo-200/90 text-indigo-950 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-2xs hover:shadow-xs cursor-pointer active:scale-95 shrink-0 group"
+              title="Decompose goal with AI Scheduling Agent"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600 transition-transform group-hover:rotate-12" />
+              <span className="hidden sm:inline">✨ AI Auto-Scheduler</span>
+              <span className="inline sm:hidden">✨ AI Scheduler</span>
+            </button>
 
             {/* Add Task Primary Action */}
             <button

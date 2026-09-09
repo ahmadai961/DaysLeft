@@ -16,7 +16,8 @@ import { TaskModal } from './components/TaskModal';
 import { ZenFocusOverlay } from './components/ZenFocusOverlay';
 import { TaskCompletionModal } from './components/TaskCompletionModal';
 import { ProductivityAnalytics } from './components/ProductivityAnalytics';
-import { Clock, Calendar as CalendarIcon, Plus, ChevronRight, Check, Layers } from 'lucide-react';
+import { AutoSchedulerModal } from './components/AutoSchedulerModal';
+import { Clock, Calendar as CalendarIcon, Plus, ChevronRight, Check, Layers, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(() => loadTasksFromStorage());
@@ -28,6 +29,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState<boolean>(false);
+  const [isAutoSchedulerOpen, setIsAutoSchedulerOpen] = useState<boolean>(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [zenTask, setZenTask] = useState<Task | null>(null);
   const [completedTaskForModal, setCompletedTaskForModal] = useState<Task | null>(null);
@@ -155,6 +157,19 @@ export default function App() {
 
   const handleDeleteTask = (taskId: string) => {
     setTasks((prev) => prev.filter((t) => t.id !== taskId));
+  };
+
+  // AI Scheduling Agent acceptance handler
+  const handleAcceptAutoSchedule = (newTasks: Task[]) => {
+    setTasks((prev) => [...newTasks, ...prev]);
+    // Automatically focus on the date of the first new countdown task on the calendar
+    if (newTasks.length > 0 && newTasks[0].date) {
+      setSelectedDateStr(newTasks[0].date);
+      const [y, m] = newTasks[0].date.split('-').map(Number);
+      if (!isNaN(y) && !isNaN(m)) {
+        setCurrentCalendarDate(new Date(y, m - 1, 1));
+      }
+    }
   };
 
   // Focus Session Handlers
@@ -301,6 +316,7 @@ export default function App() {
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         onOpenNewTaskModal={() => handleOpenNewTaskModal(selectedDateStr)}
+        onOpenAutoScheduler={() => setIsAutoSchedulerOpen(true)}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         totalTaskCount={tasks.length}
@@ -520,17 +536,39 @@ export default function App() {
         </section>
       </main>
 
-      {/* Mobile Floating Action Button (FAB) for quick access */}
-      <button
-        type="button"
-        onClick={() => handleOpenNewTaskModal(selectedDateStr)}
-        className="fixed bottom-6 right-5 z-40 lg:hidden flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3.5 rounded-full shadow-2xl border border-zinc-700/60 active:scale-95 transition-all cursor-pointer group"
-        aria-label="Add Task / Create Countdown"
-        id="mobile-fab-add-task"
-      >
-        <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-        <span className="text-xs font-bold tracking-wide pr-1">Add Task</span>
-      </button>
+      {/* Mobile Floating Action Buttons for quick access */}
+      <div className="fixed bottom-6 right-5 z-40 lg:hidden flex flex-col items-end gap-2.5 pointer-events-none">
+        {/* Floating AI Auto-Scheduler Button */}
+        <button
+          type="button"
+          onClick={() => setIsAutoSchedulerOpen(true)}
+          className="pointer-events-auto flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white px-3.5 py-2.5 rounded-full shadow-xl border border-indigo-400/30 active:scale-95 transition-all cursor-pointer group text-xs font-bold"
+          aria-label="AI Auto-Scheduler"
+          id="mobile-fab-ai-scheduler"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-sky-200 transition-transform group-hover:rotate-12" />
+          <span>✨ AI Auto-Scheduler</span>
+        </button>
+
+        {/* Mobile Floating Action Button (FAB) for Add Task */}
+        <button
+          type="button"
+          onClick={() => handleOpenNewTaskModal(selectedDateStr)}
+          className="pointer-events-auto flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3.5 rounded-full shadow-2xl border border-zinc-700/60 active:scale-95 transition-all cursor-pointer group"
+          aria-label="Add Task / Create Countdown"
+          id="mobile-fab-add-task"
+        >
+          <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
+          <span className="text-xs font-bold tracking-wide pr-1">Add Task</span>
+        </button>
+      </div>
+
+      {/* AI Auto-Scheduler Modal (Gemini Agent) */}
+      <AutoSchedulerModal
+        isOpen={isAutoSchedulerOpen}
+        onClose={() => setIsAutoSchedulerOpen(false)}
+        onAcceptSchedule={handleAcceptAutoSchedule}
+      />
 
       {/* Task Creation & Edit Modal */}
       <TaskModal
