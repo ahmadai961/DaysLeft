@@ -64,22 +64,22 @@ export const CountdownList: React.FC<CountdownListProps> = ({
   });
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5 sm:p-5 shadow-xs space-y-4 w-full min-w-0 overflow-hidden">
+    <div className="bg-white border border-zinc-200 rounded-2xl p-3.5 sm:p-5 shadow-xs space-y-4 w-full min-w-0 overflow-hidden dark:bg-zinc-900 dark:border-zinc-800">
       {/* Header & Filter Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4 dark:border-zinc-800">
         <div>
-          <h2 className="text-base font-bold text-zinc-50 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-zinc-300" />
+          <h2 className="text-base font-bold text-zinc-900 flex items-center gap-2 dark:text-zinc-50">
+            <Clock className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
             All Countdowns
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5 dark:text-zinc-400">
             Real-time countdown timers synchronized with your calendar tasks.
           </p>
         </div>
 
         {/* Filter Pills */}
         {!isOverallEmpty && (
-          <div className="flex items-center gap-1 bg-zinc-700/80 p-1 rounded-xl overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-xl overflow-x-auto max-w-full dark:bg-zinc-700/80">
             {(['all', 'upcoming', 'today', 'overdue', 'completed'] as FilterTab[]).map((tab) => (
               <button
                 type="button"
@@ -87,8 +87,8 @@ export const CountdownList: React.FC<CountdownListProps> = ({
                 onClick={() => onFilterChange(tab)}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-lg capitalize whitespace-nowrap transition-all cursor-pointer ${
                   activeFilter === tab
-                    ? 'bg-zinc-600 text-zinc-50 shadow-xs'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-white text-zinc-900 shadow-xs dark:bg-zinc-600 dark:text-zinc-50'
+                    : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
                 }`}
               >
                 {tab}
@@ -100,14 +100,14 @@ export const CountdownList: React.FC<CountdownListProps> = ({
 
       {/* Zero tasks total: clean empty-state placeholder */}
       {isOverallEmpty ? (
-        <div className="py-10 px-4 text-center flex flex-col items-center justify-center border-2 border-dashed border-zinc-800/90 rounded-2xl bg-zinc-800/60">
-          <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 shadow-xs flex items-center justify-center mb-3 text-zinc-300">
-            <CalendarPlus className="w-6 h-6 text-zinc-200" />
+        <div className="py-10 px-4 text-center flex flex-col items-center justify-center border-2 border-dashed border-zinc-200/90 rounded-2xl bg-zinc-50/60 dark:border-zinc-800/90 dark:bg-zinc-800/60">
+          <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-center mb-3 text-zinc-700 dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300">
+            <CalendarPlus className="w-6 h-6 text-zinc-800 dark:text-zinc-200" />
           </div>
-          <h3 className="text-sm font-bold text-zinc-50 mb-1">
+          <h3 className="text-sm font-bold text-zinc-900 mb-1 dark:text-zinc-50">
             No countdowns or tasks yet
           </h3>
-          <p className="text-xs text-zinc-400 max-w-[280px] leading-relaxed mb-4">
+          <p className="text-xs text-zinc-500 max-w-[280px] leading-relaxed mb-4 dark:text-zinc-400">
             Add your first task or select a date on the calendar to start tracking live countdowns and focus sessions.
           </p>
           {onAddNewTask && (
@@ -120,19 +120,19 @@ export const CountdownList: React.FC<CountdownListProps> = ({
               <span>Add Your First Task</span>
             </button>
           )}
-          <div className="mt-4 pt-3 border-t border-zinc-800/70 w-full max-w-[260px] flex items-center justify-center gap-1.5 text-[11px] text-zinc-500">
-            <Calendar className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+          <div className="mt-4 pt-3 border-t border-zinc-200/70 w-full max-w-[260px] flex items-center justify-center gap-1.5 text-[11px] text-zinc-400 dark:border-zinc-800/70 dark:text-zinc-500">
+            <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0 dark:text-zinc-500" />
             <span>Click any day on the calendar to schedule</span>
           </div>
         </div>
       ) : sortedTasks.length === 0 ? (
-        <div className="py-10 text-center text-zinc-500">
+        <div className="py-10 text-center text-zinc-400 dark:text-zinc-500">
           <Clock className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
           <p className="text-xs font-medium">No tasks found for the '{activeFilter}' filter.</p>
           <button
             type="button"
             onClick={() => onFilterChange('all')}
-            className="mt-2 text-xs font-semibold text-zinc-300 hover:text-zinc-50 underline cursor-pointer"
+            className="mt-2 text-xs font-semibold text-zinc-700 hover:text-zinc-900 underline cursor-pointer dark:text-zinc-300 dark:hover:text-zinc-50"
           >
             Show All Countdowns
           </button>

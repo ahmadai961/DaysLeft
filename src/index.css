@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+/* Enable toggling dark mode via a `.dark` class on <html> instead of only
+   following the OS-level prefers-color-scheme media query. */
+@custom-variant dark (&:is(.dark *));
+
+html:not(.dark) {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}

@@ -39,24 +39,24 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
   const getCategoryColor = (cat: string) => {
     switch (cat) {
       case 'Work':
-        return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
+        return 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30';
       case 'Study':
-        return 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30';
+        return 'bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-300 dark:border-indigo-500/30';
       case 'Health':
-        return 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30';
       case 'Finance':
-        return 'bg-rose-500/10 text-rose-300 border-rose-500/30';
+        return 'bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30';
       case 'Project':
-        return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
+        return 'bg-purple-50 text-purple-800 border-purple-200 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/30';
       default:
-        return 'bg-zinc-700 text-zinc-200 border-zinc-800';
+        return 'bg-zinc-100 text-zinc-800 border-zinc-200 dark:bg-zinc-700 dark:text-zinc-200 dark:border-zinc-800';
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/60 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
       <div
-        className="bg-zinc-900 border border-zinc-800/90 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative transform transition-all animate-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col my-auto"
+        className="bg-white border border-zinc-200/90 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative transform transition-all animate-in zoom-in-95 duration-200 max-h-[85vh] flex flex-col my-auto dark:bg-zinc-900 dark:border-zinc-800/90"
         role="dialog"
         aria-modal="true"
       >
@@ -81,12 +81,12 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
         {/* Modal Body */}
         <div className="overflow-y-auto p-5 sm:p-6 space-y-4 flex-1">
           {/* Task Title & Category */}
-          <div className="bg-zinc-800 border border-zinc-800 rounded-xl p-3.5 flex items-start justify-between gap-3">
+          <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-3.5 flex items-start justify-between gap-3 dark:bg-zinc-800 dark:border-zinc-800">
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500 block mb-0.5">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block mb-0.5 dark:text-zinc-500">
                 Completed Task
               </span>
-              <h3 className="text-sm sm:text-base font-bold text-zinc-50 line-clamp-2">
+              <h3 className="text-sm sm:text-base font-bold text-zinc-900 line-clamp-2 dark:text-zinc-50">
                 {task.title}
               </h3>
             </div>
@@ -102,19 +102,19 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
           {/* Quick Metrics Grid */}
           <div className="grid grid-cols-2 gap-3">
             {/* Metric 1: Category & Focus Effort */}
-            <div className="bg-zinc-800 border border-zinc-800/80 rounded-xl p-3 flex flex-col justify-between">
-              <div className="flex items-center gap-1.5 text-zinc-400 mb-1">
-                <Flame className="w-4 h-4 text-amber-400" />
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+            <div className="bg-zinc-50 border border-zinc-200/80 rounded-xl p-3 flex flex-col justify-between dark:bg-zinc-800 dark:border-zinc-800/80">
+              <div className="flex items-center gap-1.5 text-zinc-500 mb-1 dark:text-zinc-400">
+                <Flame className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
                   Focus Effort
                 </span>
               </div>
               <div>
-                <span className="text-lg sm:text-xl font-mono font-bold text-zinc-50">
+                <span className="text-lg sm:text-xl font-mono font-bold text-zinc-900 dark:text-zinc-50">
                   {focusTimeSpent === '0m' ? '< 1m' : focusTimeSpent}
                 </span>
-                <span className="text-[10px] text-zinc-400 block font-medium mt-0.5">
-                  Logged in <strong className="text-zinc-300">{task.category}</strong>
+                <span className="text-[10px] text-zinc-500 block font-medium mt-0.5 dark:text-zinc-400">
+                  Logged in <strong className="text-zinc-700 dark:text-zinc-300">{task.category}</strong>
                 </span>
               </div>
             </div>
@@ -123,19 +123,19 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
             <div
               className={`border rounded-xl p-3 flex flex-col justify-between ${
                 timeSavedInfo.isEarly
-                  ? 'bg-cyan-500/10 border-cyan-500/30'
-                  : 'bg-zinc-800 border-zinc-800/80'
+                  ? 'bg-cyan-50/70 border-cyan-200 dark:bg-cyan-500/10 dark:border-cyan-500/30'
+                  : 'bg-zinc-50 border-zinc-200/80 dark:bg-zinc-800 dark:border-zinc-800/80'
               }`}
             >
               <div className="flex items-center gap-1.5 mb-1">
                 {timeSavedInfo.isEarly ? (
-                  <Zap className="w-4 h-4 text-cyan-400" />
+                  <Zap className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 ) : (
-                  <Clock className="w-4 h-4 text-zinc-500" />
+                  <Clock className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
                 )}
                 <span
                   className={`text-[11px] font-semibold uppercase tracking-wider ${
-                    timeSavedInfo.isEarly ? 'text-cyan-300' : 'text-zinc-400'
+                    timeSavedInfo.isEarly ? 'text-cyan-800 dark:text-cyan-300' : 'text-zinc-600 dark:text-zinc-400'
                   }`}
                 >
                   Time Saved
@@ -144,14 +144,14 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
               <div>
                 <div
                   className={`text-lg sm:text-xl font-mono font-bold ${
-                    timeSavedInfo.isEarly ? 'text-cyan-300' : 'text-zinc-400'
+                    timeSavedInfo.isEarly ? 'text-cyan-700 dark:text-cyan-300' : 'text-zinc-600 dark:text-zinc-400'
                   }`}
                 >
                   {timeSavedInfo.isEarly ? timeSavedInfo.formattedSaved : '0m'}
                 </div>
                 <span
                   className={`text-[10px] block font-medium mt-0.5 ${
-                    timeSavedInfo.isEarly ? 'text-cyan-300' : 'text-zinc-400'
+                    timeSavedInfo.isEarly ? 'text-cyan-700 dark:text-cyan-300' : 'text-zinc-500 dark:text-zinc-400'
                   }`}
                 >
                   {timeSavedInfo.isEarly
@@ -163,8 +163,8 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
           </div>
 
           {/* Productivity Tip / Boost Note */}
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 flex items-center gap-2.5 text-xs text-emerald-300">
-            <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-xl p-3 flex items-center gap-2.5 text-xs text-emerald-900 dark:bg-emerald-500/10 dark:border-emerald-500/30 dark:text-emerald-300">
+            <Sparkles className="w-4 h-4 text-emerald-600 shrink-0 dark:text-emerald-400" />
             <p className="leading-snug">
               {timeSavedInfo.isEarly
                 ? `Great pacing! Your early completion has been deposited into the Time Saved Bank below.`

@@ -28,15 +28,15 @@ export const SelectedDatePanel: React.FC<SelectedDatePanelProps> = ({
   onToggleChecklistItem,
 }) => {
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xs space-y-4">
+    <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs space-y-4 dark:bg-zinc-900 dark:border-zinc-800">
       {/* Date Header & Add Task Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-100 pb-4 dark:border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
-            <h2 className="text-base font-bold text-zinc-50">{formatLongDate(selectedDateStr)}</h2>
+            <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-blue-500" />
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-50">{formatLongDate(selectedDateStr)}</h2>
           </div>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5 dark:text-zinc-400">
             {tasks.length === 0
               ? 'No tasks assigned for this date'
               : `${tasks.length} task${tasks.length === 1 ? '' : 's'} assigned`}
@@ -56,11 +56,11 @@ export const SelectedDatePanel: React.FC<SelectedDatePanelProps> = ({
       {/* Tasks List */}
       {tasks.length === 0 ? (
         <div className="py-10 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-2xl bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-500 mb-3">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 mb-3 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-500">
             <Calendar className="w-6 h-6" />
           </div>
-          <h3 className="text-sm font-bold text-zinc-200">Free Schedule</h3>
-          <p className="text-xs text-zinc-500 max-w-xs mt-1">
+          <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Free Schedule</h3>
+          <p className="text-xs text-zinc-400 max-w-xs mt-1 dark:text-zinc-500">
             There are no tasks scheduled for this day. Click &ldquo;Assign Task Here&rdquo; to add one.
           </p>
         </div>
