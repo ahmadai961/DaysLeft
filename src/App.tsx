@@ -306,7 +306,7 @@ export default function App() {
   const pendingCount = tasks.filter((t) => !t.completed).length;
 
   return (
-    <div className="min-h-screen bg-white text-zinc-900 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen bg-zinc-900 text-zinc-50 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
       {/* Top Sticky App Header */}
       <CalendarHeader
         currentDate={currentCalendarDate}
@@ -326,14 +326,14 @@ export default function App() {
       {/* Main Container with extra bottom padding for mobile navigation and FAB */}
       <main className="max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28 sm:pb-12 space-y-5 sm:space-y-8 flex-1 overflow-x-hidden">
         {/* Mobile View Switcher (Screen < lg) */}
-        <div className="lg:hidden flex items-center p-1 bg-zinc-100 rounded-2xl border border-zinc-200 shadow-2xs">
+        <div className="lg:hidden flex items-center p-1 bg-zinc-700 rounded-2xl border border-zinc-800 shadow-2xs">
           <button
             type="button"
             onClick={() => setMobileTab('calendar')}
             className={`flex-1 py-2 min-h-[40px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               mobileTab === 'calendar'
-                ? 'bg-white text-zinc-900 shadow-xs'
-                : 'text-zinc-500 hover:text-zinc-800'
+                ? 'bg-zinc-600 text-zinc-50 shadow-xs'
+                : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             <CalendarIcon className="w-3.5 h-3.5 shrink-0" />
@@ -344,14 +344,14 @@ export default function App() {
             onClick={() => setMobileTab('countdowns')}
             className={`flex-1 py-2 min-h-[40px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               mobileTab === 'countdowns'
-                ? 'bg-white text-zinc-900 shadow-xs'
-                : 'text-zinc-500 hover:text-zinc-800'
+                ? 'bg-zinc-600 text-zinc-50 shadow-xs'
+                : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             <Clock className="w-3.5 h-3.5 shrink-0" />
             <span>Countdowns</span>
             {tasks.length > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-zinc-200 text-zinc-700 font-bold ml-0.5">
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-zinc-600 text-zinc-300 font-bold ml-0.5">
                 {tasks.length}
               </span>
             )}
@@ -361,8 +361,8 @@ export default function App() {
             onClick={() => setMobileTab('both')}
             className={`flex-1 py-2 min-h-[40px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               mobileTab === 'both'
-                ? 'bg-white text-zinc-900 shadow-xs'
-                : 'text-zinc-500 hover:text-zinc-800'
+                ? 'bg-zinc-600 text-zinc-50 shadow-xs'
+                : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             <Layers className="w-3.5 h-3.5 shrink-0" />
@@ -415,13 +415,13 @@ export default function App() {
             )}
 
             {/* Mobile Selected Date Detail & Quick Add Strip */}
-            <div className="lg:hidden bg-white border border-zinc-200 rounded-2xl p-3.5 shadow-xs space-y-2.5">
+            <div className="lg:hidden bg-zinc-900 border border-zinc-800 rounded-2xl p-3.5 shadow-xs space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-bold uppercase text-zinc-400 tracking-wider block">
+                  <span className="text-[11px] font-bold uppercase text-zinc-500 tracking-wider block">
                     Selected Day
                   </span>
-                  <span className="text-sm font-bold text-zinc-900">
+                  <span className="text-sm font-bold text-zinc-50">
                     {selectedDateObj.toLocaleDateString('en-US', {
                       weekday: 'short',
                       month: 'short',
@@ -440,12 +440,12 @@ export default function App() {
               </div>
 
               {selectedDateTasks.length > 0 ? (
-                <div className="space-y-1.5 pt-1 border-t border-zinc-100">
+                <div className="space-y-1.5 pt-1 border-t border-zinc-800">
                   {selectedDateTasks.map((t) => (
                     <div
                       key={t.id}
                       onClick={() => handleEditTask(t)}
-                      className="p-2 rounded-xl bg-zinc-50 border border-zinc-200/80 flex items-center justify-between gap-2 cursor-pointer hover:bg-zinc-100/70"
+                      className="p-2 rounded-xl bg-zinc-800 border border-zinc-800/80 flex items-center justify-between gap-2 cursor-pointer hover:bg-zinc-700/70"
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <button
@@ -457,14 +457,14 @@ export default function App() {
                           className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 cursor-pointer ${
                             t.completed
                               ? 'bg-emerald-500 border-emerald-500 text-white'
-                              : 'border-zinc-300 bg-white'
+                              : 'border-zinc-700 bg-zinc-900'
                           }`}
                         >
                           {t.completed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                         </button>
                         <span
                           className={`text-xs font-semibold truncate ${
-                            t.completed ? 'line-through text-zinc-400' : 'text-zinc-800'
+                            t.completed ? 'line-through text-zinc-500' : 'text-zinc-200'
                           }`}
                         >
                           {t.title}
@@ -476,7 +476,7 @@ export default function App() {
                           e.stopPropagation();
                           setMobileTab('countdowns');
                         }}
-                        className="text-[11px] font-bold text-sky-600 hover:text-sky-800 shrink-0 flex items-center gap-0.5"
+                        className="text-[11px] font-bold text-sky-400 hover:text-sky-300 shrink-0 flex items-center gap-0.5"
                       >
                         <span>Timer</span>
                         <ChevronRight className="w-3 h-3" />
@@ -485,16 +485,16 @@ export default function App() {
                   ))}
                 </div>
               ) : (
-                <div className="text-[11px] text-zinc-400 pt-1">
+                <div className="text-[11px] text-zinc-500 pt-1">
                   No tasks scheduled for this day yet.
                 </div>
               )}
             </div>
 
             {/* Quick Tips / Zen Mode Prompt Card */}
-            <div className="bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 text-xs text-zinc-500 space-y-2">
-              <div className="flex items-center gap-2 font-bold text-zinc-800">
-                <Clock className="w-3.5 h-3.5 text-zinc-700" />
+            <div className="bg-zinc-800 border border-zinc-800/80 rounded-2xl p-4 text-xs text-zinc-400 space-y-2">
+              <div className="flex items-center gap-2 font-bold text-zinc-200">
+                <Clock className="w-3.5 h-3.5 text-zinc-300" />
                 Real-time Precision Countdowns & Live Focus Tracking
               </div>
               <p className="leading-relaxed">

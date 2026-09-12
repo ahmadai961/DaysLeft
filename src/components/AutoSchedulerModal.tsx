@@ -703,12 +703,12 @@ Rules:
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="bg-white border border-zinc-200/90 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden text-zinc-900"
+        className="bg-zinc-900 border border-zinc-800/90 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden text-zinc-50"
         role="dialog"
         aria-modal="true"
       >
         {/* Header */}
-        <header className="px-5 py-4 sm:px-6 sm:py-4.5 border-b border-zinc-100 flex items-center justify-between bg-gradient-to-r from-zinc-900 via-zinc-900 to-indigo-950 text-white shrink-0">
+        <header className="px-5 py-4 sm:px-6 sm:py-4.5 border-b border-zinc-800 flex items-center justify-between bg-gradient-to-r from-zinc-900 via-zinc-900 to-indigo-950 text-white shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.25)]">
               <Sparkles className="w-5 h-5 text-indigo-300" />
@@ -722,7 +722,7 @@ Rules:
                   Client-Side Engine
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400 font-medium">
+              <p className="text-[11px] text-zinc-500 font-medium">
                 Direct browser AI decomposition & smart offline heuristics
               </p>
             </div>
@@ -742,7 +742,7 @@ Rules:
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
               title="Close"
             >
               <X className="w-5 h-5" />
@@ -754,17 +754,17 @@ Rules:
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
           {/* IN-APP KEY SETUP CARD (If requested, missing, or toggled) */}
           {showKeyInput && (
-            <div className="p-3.5 bg-zinc-50 border border-zinc-200 rounded-xl space-y-2.5 animate-in fade-in">
+            <div className="p-3.5 bg-zinc-800 border border-zinc-800 rounded-xl space-y-2.5 animate-in fade-in">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xs font-bold text-zinc-800">
-                  <Key className="w-3.5 h-3.5 text-amber-500" />
+                <div className="flex items-center gap-2 text-xs font-bold text-zinc-200">
+                  <Key className="w-3.5 h-3.5 text-amber-400" />
                   <span>Gemini API Key Configuration</span>
                 </div>
                 {currentApiKey && (
                   <button
                     type="button"
                     onClick={handleClearApiKey}
-                    className="text-[10px] text-rose-600 hover:underline font-semibold cursor-pointer"
+                    className="text-[10px] text-rose-400 hover:underline font-semibold cursor-pointer"
                   >
                     Remove Saved Key
                   </button>
@@ -777,15 +777,15 @@ Rules:
                   value={keyInputValue}
                   onChange={(e) => setKeyInputValue(e.target.value)}
                   placeholder={currentApiKey ? '•••••••••••••••• (Key saved in localStorage)' : 'Enter your Gemini API Key (e.g. AIza...)'}
-                  className="flex-1 bg-white border border-zinc-300 rounded-lg px-3 py-1.5 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-900 shadow-2xs font-mono"
+                  className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-1.5 text-xs text-zinc-50 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-500/40 shadow-2xs font-mono"
                 />
                 <button
                   type="submit"
                   disabled={!keyInputValue.trim()}
                   className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                     keyInputValue.trim()
-                      ? 'bg-zinc-900 hover:bg-zinc-800 text-white'
-                      : 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      : 'bg-zinc-600 text-zinc-500 cursor-not-allowed'
                   }`}
                 >
                   Save
@@ -793,22 +793,22 @@ Rules:
               </form>
 
               {keySaveSuccess && (
-                <p className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                <p className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   Key successfully saved into localStorage!
                 </p>
               )}
 
-              <p className="text-[11px] text-zinc-500 leading-normal">
-                Stored in browser <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[10px]">localStorage.getItem('gemini_api_key')</code>. Direct requests are sent straight from your browser to Google Gen AI without backend server routes.
+              <p className="text-[11px] text-zinc-400 leading-normal">
+                Stored in browser <code className="bg-zinc-600/70 px-1 py-0.5 rounded text-[10px]">localStorage.getItem('gemini_api_key')</code>. Direct requests are sent straight from your browser to Google Gen AI without backend server routes.
               </p>
             </div>
           )}
 
           {/* Informational Message Banner */}
           {infoMessage && (
-            <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl flex items-start gap-2.5 text-xs text-amber-900 animate-in fade-in">
-              <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+            <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-start gap-2.5 text-xs text-amber-300 animate-in fade-in">
+              <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-400" />
               <p className="text-[11px] leading-relaxed">{infoMessage}</p>
             </div>
           )}
@@ -817,7 +817,7 @@ Rules:
           {generatedEvents.length === 0 ? (
             <div className="space-y-4">
               <form onSubmit={handleSubmit} className="space-y-3">
-                <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider">
+                <label className="block text-xs font-bold text-zinc-300 uppercase tracking-wider">
                   What is your upcoming goal or target?
                 </label>
 
@@ -827,7 +827,7 @@ Rules:
                     value={goalPrompt}
                     onChange={(e) => setGoalPrompt(e.target.value)}
                     placeholder="e.g., I have an exam on Oct 20, break down a study schedule for me with 3 study sessions..."
-                    className="w-full bg-zinc-50 focus:bg-white text-zinc-900 placeholder-zinc-400 border border-zinc-300 focus:border-zinc-900 rounded-xl p-3.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-zinc-900/10 transition-all leading-relaxed resize-none shadow-2xs"
+                    className="w-full bg-zinc-800 focus:bg-zinc-900 text-zinc-50 placeholder-zinc-400 border border-zinc-700 focus:border-blue-500 rounded-xl p-3.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-500/30 transition-all leading-relaxed resize-none shadow-2xs"
                     disabled={isLoading}
                     autoFocus
                   />
@@ -835,7 +835,7 @@ Rules:
                     <button
                       type="button"
                       onClick={() => setGoalPrompt('')}
-                      className="absolute right-3 top-3 text-zinc-400 hover:text-zinc-600 text-xs font-bold p-1 cursor-pointer"
+                      className="absolute right-3 top-3 text-zinc-500 hover:text-zinc-400 text-xs font-bold p-1 cursor-pointer"
                     >
                       Clear
                     </button>
@@ -844,8 +844,8 @@ Rules:
 
                 {/* Suggested Chips */}
                 <div className="space-y-1.5 pt-1">
-                  <span className="text-[11px] font-semibold text-zinc-500 flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-amber-500" />
+                  <span className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-amber-400" />
                     Suggested Prompts:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -855,7 +855,7 @@ Rules:
                         type="button"
                         onClick={() => handleChipClick(chip)}
                         disabled={isLoading}
-                        className="text-[11px] text-zinc-600 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200/80 border border-zinc-200/80 rounded-lg px-2.5 py-1.5 transition-colors cursor-pointer text-left active:scale-98"
+                        className="text-[11px] text-zinc-400 hover:text-zinc-50 bg-zinc-700 hover:bg-zinc-600/80 border border-zinc-800/80 rounded-lg px-2.5 py-1.5 transition-colors cursor-pointer text-left active:scale-98"
                       >
                         {chip}
                       </button>
@@ -869,7 +869,7 @@ Rules:
                     type="button"
                     onClick={onClose}
                     disabled={isLoading}
-                    className="px-4 py-2.5 rounded-xl border border-zinc-200 text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl border border-zinc-800 text-xs font-semibold text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -878,8 +878,8 @@ Rules:
                     disabled={!goalPrompt.trim() || isLoading}
                     className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer shadow-xs ${
                       !goalPrompt.trim() || isLoading
-                        ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
-                        : 'bg-zinc-900 hover:bg-zinc-800 text-white active:scale-95'
+                        ? 'bg-zinc-600 text-zinc-500 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95'
                     }`}
                   >
                     {isLoading ? (
@@ -899,10 +899,10 @@ Rules:
               </form>
 
               {/* Informative Helper Callout */}
-              <div className="p-3.5 bg-sky-50/70 border border-sky-100 rounded-xl text-sky-950 flex items-start gap-2.5">
-                <CalendarIcon className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
-                <p className="text-xs leading-relaxed text-sky-800">
-                  <strong className="font-semibold text-sky-900">Direct Client Intelligence: </strong>
+              <div className="p-3.5 bg-sky-500/10 border border-sky-500/30 rounded-xl text-sky-300 flex items-start gap-2.5">
+                <CalendarIcon className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                <p className="text-xs leading-relaxed text-sky-300">
+                  <strong className="font-semibold text-sky-300">Direct Client Intelligence: </strong>
                   Calls Google Gen AI directly from your browser. Includes an offline intent parser that converts dates (e.g. "tomorrow", "Oct 20"), times ("6pm"), and durations ("2 hours") without requiring backend server routes.
                 </p>
               </div>
@@ -911,27 +911,27 @@ Rules:
             /* STEP 2: Preview Generated Sessions */
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
               {/* Preview Header Banner */}
-              <div className="flex items-center justify-between bg-zinc-50 border border-zinc-200/90 rounded-xl p-3">
+              <div className="flex items-center justify-between bg-zinc-800 border border-zinc-800/90 rounded-xl p-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center font-bold text-xs">
                     <Check className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs sm:text-sm font-bold text-zinc-900">
+                      <h3 className="text-xs sm:text-sm font-bold text-zinc-50">
                         Formulated {generatedEvents.length} countdown sessions:
                       </h3>
                       {activeSource === 'gemini' ? (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
                           ⚡ Direct Gemini AI
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
                           ✨ Smart Heuristic Parser
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-zinc-500">
+                    <p className="text-[11px] text-zinc-400">
                       {selectedEventIndices.size} of {generatedEvents.length} selected to add
                     </p>
                   </div>
@@ -940,7 +940,7 @@ Rules:
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold flex items-center gap-1 p-1 rounded hover:bg-zinc-100 cursor-pointer"
+                  className="text-xs text-zinc-400 hover:text-zinc-200 font-semibold flex items-center gap-1 p-1 rounded hover:bg-zinc-700 cursor-pointer"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Try another</span>
@@ -961,16 +961,16 @@ Rules:
                       onClick={() => handleToggleEventSelect(idx)}
                       className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none ${
                         isSelected
-                          ? 'bg-white border-zinc-900/40 shadow-xs'
-                          : 'bg-zinc-50/80 border-zinc-200 text-zinc-400 opacity-60'
+                          ? 'bg-blue-500/10 border-blue-500/40 shadow-xs'
+                          : 'bg-zinc-800/80 border-zinc-800 text-zinc-500 opacity-60'
                       }`}
                     >
                       {/* Checkbox */}
                       <div
                         className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
                           isSelected
-                            ? 'bg-zinc-900 border-zinc-900 text-white'
-                            : 'border-zinc-300 bg-white'
+                            ? 'bg-blue-600 border-blue-600 text-white'
+                            : 'border-zinc-700 bg-zinc-900'
                         }`}
                       >
                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -981,7 +981,7 @@ Rules:
                         <div className="flex items-center justify-between gap-2 flex-wrap">
                           <h4
                             className={`text-xs sm:text-sm font-bold truncate ${
-                              isSelected ? 'text-zinc-900' : 'text-zinc-500'
+                              isSelected ? 'text-zinc-50' : 'text-zinc-400'
                             }`}
                           >
                             {evt.title}
@@ -989,12 +989,12 @@ Rules:
 
                           <div className="flex items-center gap-1.5 shrink-0">
                             {/* Category Pill */}
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700 border border-zinc-200">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-300 border border-zinc-800">
                               {category}
                             </span>
 
                             {/* Duration Badge */}
-                            <span className="text-[10px] font-semibold text-zinc-500 flex items-center gap-0.5 font-mono">
+                            <span className="text-[10px] font-semibold text-zinc-400 flex items-center gap-0.5 font-mono">
                               <Clock className="w-2.5 h-2.5" />
                               {evt.durationMinutes}m
                             </span>
@@ -1003,19 +1003,19 @@ Rules:
 
                         {/* Description */}
                         {evt.description && (
-                          <p className="text-xs text-zinc-500 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
                             {evt.description}
                           </p>
                         )}
 
                         {/* Date & Countdown Info */}
-                        <div className="pt-1 flex items-center gap-2 text-[11px] text-zinc-600 flex-wrap">
-                          <span className="flex items-center gap-1 font-medium text-zinc-800">
-                            <CalendarIcon className="w-3 h-3 text-zinc-400" />
+                        <div className="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 flex-wrap">
+                          <span className="flex items-center gap-1 font-medium text-zinc-200">
+                            <CalendarIcon className="w-3 h-3 text-zinc-500" />
                             {dateFormatted} {timeFormatted && `• ${timeFormatted}`}
                           </span>
                           <span className="text-zinc-300">•</span>
-                          <span className="px-1.5 py-0.2 rounded-md bg-indigo-50 text-indigo-700 font-semibold border border-indigo-100 text-[10px]">
+                          <span className="px-1.5 py-0.2 rounded-md bg-indigo-500/10 text-indigo-300 font-semibold border border-indigo-500/30 text-[10px]">
                             ⏳ {relativeCountdown}
                           </span>
                         </div>
@@ -1026,11 +1026,11 @@ Rules:
               </div>
 
               {/* Action Buttons: [Accept] [Cancel] */}
-              <div className="pt-3 border-t border-zinc-100 flex items-center justify-between gap-3">
+              <div className="pt-3 border-t border-zinc-800 flex items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-4 py-2.5 rounded-xl border border-zinc-200 text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-zinc-800 text-xs font-semibold text-zinc-400 hover:text-zinc-50 hover:bg-zinc-800 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1042,8 +1042,8 @@ Rules:
                     disabled={selectedEventIndices.size === 0}
                     className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer shadow-md ${
                       selectedEventIndices.size === 0
-                        ? 'bg-zinc-200 text-zinc-400 cursor-not-allowed'
-                        : 'bg-zinc-900 hover:bg-zinc-800 text-white active:scale-95'
+                        ? 'bg-zinc-600 text-zinc-500 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95'
                     }`}
                   >
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />

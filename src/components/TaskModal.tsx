@@ -22,10 +22,10 @@ const CATEGORIES: TaskCategory[] = [
 ];
 
 const PRIORITIES: { label: string; value: TaskPriority; color: string }[] = [
-  { label: 'Low', value: 'low', color: 'bg-zinc-100 text-zinc-700' },
-  { label: 'Medium', value: 'medium', color: 'bg-blue-50 text-blue-700 border border-blue-200' },
-  { label: 'High', value: 'high', color: 'bg-amber-50 text-amber-800 border border-amber-200' },
-  { label: 'Urgent', value: 'urgent', color: 'bg-rose-50 text-rose-700 border border-rose-200' },
+  { label: 'Low', value: 'low', color: 'bg-zinc-700 text-zinc-300' },
+  { label: 'Medium', value: 'medium', color: 'bg-blue-500/10 text-blue-300 border border-blue-500/30' },
+  { label: 'High', value: 'high', color: 'bg-amber-500/10 text-amber-300 border border-amber-500/30' },
+  { label: 'Urgent', value: 'urgent', color: 'bg-rose-500/10 text-rose-300 border border-rose-500/30' },
 ];
 
 export const TaskModal: React.FC<TaskModalProps> = ({
@@ -145,27 +145,27 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-900/40 backdrop-blur-xs animate-in fade-in duration-200 overflow-y-auto">
       <div
-        className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh] my-auto"
+        className="bg-zinc-900 border border-zinc-800 rounded-2xl sm:rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh] my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-100 flex items-center justify-between shrink-0 bg-white z-10">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-zinc-800 flex items-center justify-between shrink-0 bg-zinc-900 z-10">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900 shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-zinc-700 flex items-center justify-center text-zinc-50 shrink-0">
               <Calendar className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-zinc-900">
+              <h3 className="text-sm sm:text-base font-bold text-zinc-50">
                 {taskToEdit ? 'Edit Scheduled Task' : 'Assign New Task'}
               </h3>
-              <p className="text-[11px] sm:text-xs text-zinc-500">
+              <p className="text-[11px] sm:text-xs text-zinc-400">
                 Configure deadline and real-time countdown.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full hover:bg-zinc-700 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -178,32 +178,32 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         >
           {/* Quick Date Presets */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-semibold text-zinc-400 mr-1">Presets:</span>
+            <span className="text-[11px] font-semibold text-zinc-500 mr-1">Presets:</span>
             <button
               type="button"
               onClick={() => handleSetQuickPreset('today')}
-              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-50 hover:bg-zinc-100 text-zinc-700 rounded-lg border border-zinc-200 cursor-pointer"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg border border-zinc-800 cursor-pointer"
             >
               Today (6 PM)
             </button>
             <button
               type="button"
               onClick={() => handleSetQuickPreset('tomorrow')}
-              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-50 hover:bg-zinc-100 text-zinc-700 rounded-lg border border-zinc-200 cursor-pointer"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg border border-zinc-800 cursor-pointer"
             >
               Tomorrow
             </button>
             <button
               type="button"
               onClick={() => handleSetQuickPreset('in3days')}
-              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-50 hover:bg-zinc-100 text-zinc-700 rounded-lg border border-zinc-200 cursor-pointer"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg border border-zinc-800 cursor-pointer"
             >
               In 3 Days
             </button>
             <button
               type="button"
               onClick={() => handleSetQuickPreset('nextWeek')}
-              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-50 hover:bg-zinc-100 text-zinc-700 rounded-lg border border-zinc-200 cursor-pointer"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg border border-zinc-800 cursor-pointer"
             >
               Next Week
             </button>
@@ -211,8 +211,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Task Title */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 block">
-              Task Title <span className="text-rose-500">*</span>
+            <label className="text-xs font-bold text-zinc-300 block">
+              Task Title <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
@@ -220,7 +220,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               placeholder="e.g. Finish Quarterly Report, Launch Campaign..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-zinc-50 focus:bg-white text-sm font-semibold text-zinc-900 border border-zinc-200 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 transition-all"
+              className="w-full bg-zinc-800 focus:bg-zinc-900 text-sm font-semibold text-zinc-50 border border-zinc-800 rounded-xl px-3.5 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all"
               autoFocus
             />
           </div>
@@ -228,31 +228,31 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* Date & Time Row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-                Scheduled Date <span className="text-rose-500">*</span>
+              <label className="text-xs font-bold text-zinc-300 flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5 text-zinc-500" />
+                Scheduled Date <span className="text-rose-400">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-zinc-50 focus:bg-white text-xs font-medium text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900"
+                className="w-full bg-zinc-800 focus:bg-zinc-900 text-xs font-medium text-zinc-50 border border-zinc-800 rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500/40 focus:border-blue-500"
               />
             </div>
 
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-bold text-zinc-700 flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-zinc-400" />
+                <label className="text-xs font-bold text-zinc-300 flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5 text-zinc-500" />
                   Due Time
                 </label>
-                <label className="flex items-center gap-1 text-[11px] text-zinc-500 cursor-pointer">
+                <label className="flex items-center gap-1 text-[11px] text-zinc-400 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isAllDay}
                     onChange={(e) => setIsAllDay(e.target.checked)}
-                    className="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+                    className="rounded border-zinc-700 text-zinc-50 focus:ring-0"
                   />
                   All Day
                 </label>
@@ -264,8 +264,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onChange={(e) => setTime(e.target.value)}
                 className={`w-full text-xs font-medium border rounded-xl px-3 py-2 outline-none transition-all ${
                   isAllDay
-                    ? 'bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed'
-                    : 'bg-zinc-50 focus:bg-white text-zinc-900 border-zinc-200 focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900'
+                    ? 'bg-zinc-700 text-zinc-500 border-zinc-800 cursor-not-allowed'
+                    : 'bg-zinc-800 focus:bg-zinc-900 text-zinc-50 border-zinc-800 focus:ring-1 focus:ring-blue-500/40 focus:border-blue-500'
                 }`}
               />
             </div>
@@ -274,11 +274,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           {/* Priority & Category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 block">Category</label>
+              <label className="text-xs font-bold text-zinc-300 block">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as TaskCategory)}
-                className="w-full bg-zinc-50 focus:bg-white text-xs font-medium text-zinc-900 border border-zinc-200 rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-zinc-900"
+                className="w-full bg-zinc-800 focus:bg-zinc-900 text-xs font-medium text-zinc-50 border border-zinc-800 rounded-xl px-3 py-2 outline-none focus:ring-1 focus:ring-blue-500/40"
               >
                 {CATEGORIES.map((c) => (
                   <option key={c} value={c}>
@@ -289,7 +289,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-700 block">Priority</label>
+              <label className="text-xs font-bold text-zinc-300 block">Priority</label>
               <div className="grid grid-cols-4 gap-1">
                 {PRIORITIES.map((p) => (
                   <button
@@ -298,8 +298,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     onClick={() => setPriority(p.value)}
                     className={`py-1.5 text-[11px] font-semibold rounded-lg border transition-all cursor-pointer text-center ${
                       priority === p.value
-                        ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs'
-                        : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-800'
                     }`}
                   >
                     {p.label}
@@ -310,13 +310,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </div>
 
           {/* Countdown Bar & Theme Color */}
-          <div className="space-y-2 border-t border-zinc-100 pt-3">
+          <div className="space-y-2 border-t border-zinc-800 pt-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-zinc-700 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-zinc-500" />
+              <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-zinc-400" />
                 <span>Countdown Bar & Card Color</span>
               </label>
-              <span className="text-[11px] text-zinc-400">
+              <span className="text-[11px] text-zinc-500">
                 {color ? 'Custom color' : 'Auto random color'}
               </span>
             </div>
@@ -329,8 +329,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onClick={() => setColor('')}
                 className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition-all cursor-pointer ${
                   color === ''
-                    ? 'bg-zinc-900 text-white border-zinc-900 shadow-xs'
-                    : 'bg-zinc-50 hover:bg-zinc-100 text-zinc-700 border-zinc-200'
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                    : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border-zinc-800'
                 }`}
                 title="Assign random vibrant color automatically"
               >
@@ -348,7 +348,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     onClick={() => setColor(c.hex)}
                     style={{ backgroundColor: c.hex }}
                     className={`w-7 h-7 rounded-full transition-transform cursor-pointer relative flex items-center justify-center shadow-2xs hover:scale-110 active:scale-95 ${
-                      isSelected ? 'ring-2 ring-offset-2 ring-zinc-900 scale-110' : ''
+                      isSelected ? 'ring-2 ring-offset-2 ring-offset-zinc-900 ring-zinc-100 scale-110' : ''
                     }`}
                     title={c.name}
                   >
@@ -359,10 +359,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
               {/* Custom Color Input Picker */}
               <label
-                className="w-7 h-7 rounded-full border border-dashed border-zinc-300 hover:border-zinc-500 flex items-center justify-center cursor-pointer transition-transform hover:scale-110 active:scale-95 relative bg-gradient-to-tr from-sky-400 via-rose-400 to-amber-400 p-0.5"
+                className="w-7 h-7 rounded-full border border-dashed border-zinc-700 hover:border-zinc-500 flex items-center justify-center cursor-pointer transition-transform hover:scale-110 active:scale-95 relative bg-gradient-to-tr from-sky-400 via-rose-400 to-amber-400 p-0.5"
                 title="Custom color hex picker"
               >
-                <div className="w-full h-full bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-zinc-700">
+                <div className="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center text-[10px] font-bold text-zinc-300">
                   +
                 </div>
                 <input
@@ -375,14 +375,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             </div>
 
             {/* Live Countdown Bar Preview */}
-            <div className="bg-zinc-50 border border-zinc-200/80 rounded-xl p-2.5 space-y-1.5">
-              <div className="flex items-center justify-between text-[11px] text-zinc-600 font-medium">
+            <div className="bg-zinc-800 border border-zinc-800/80 rounded-xl p-2.5 space-y-1.5">
+              <div className="flex items-center justify-between text-[11px] text-zinc-400 font-medium">
                 <span>Countdown Bar Preview</span>
                 <span className="font-mono text-[10px] font-bold" style={{ color: color || '#0284c7' }}>
                   {color ? color : 'Random Palette (Auto)'}
                 </span>
               </div>
-              <div className="h-2 w-full bg-zinc-200/70 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-zinc-600/70 rounded-full overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-300"
                   style={{
@@ -396,19 +396,19 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 
           {/* Notes / Description */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-700 block">Notes & Details</label>
+            <label className="text-xs font-bold text-zinc-300 block">Notes & Details</label>
             <textarea
               rows={2}
               placeholder="Add extra context, deliverables, or checklist details..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-zinc-50 focus:bg-white text-xs text-zinc-800 border border-zinc-200 rounded-xl p-3 outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900"
+              className="w-full bg-zinc-800 focus:bg-zinc-900 text-xs text-zinc-200 border border-zinc-800 rounded-xl p-3 outline-none focus:ring-1 focus:ring-blue-500/40 focus:border-blue-500"
             />
           </div>
 
           {/* Sub-Checklist (Optional) */}
-          <div className="space-y-2 border-t border-zinc-100 pt-3">
-            <label className="text-xs font-bold text-zinc-700 block">Sub-tasks Checklist</label>
+          <div className="space-y-2 border-t border-zinc-800 pt-3">
+            <label className="text-xs font-bold text-zinc-300 block">Sub-tasks Checklist</label>
             <div className="flex items-center gap-2">
               <input
                 type="text"
@@ -421,12 +421,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     handleAddChecklistItem();
                   }
                 }}
-                className="flex-1 bg-zinc-50 focus:bg-white text-xs border border-zinc-200 rounded-xl px-3 py-1.5 outline-none"
+                className="flex-1 bg-zinc-800 focus:bg-zinc-900 text-xs border border-zinc-800 rounded-xl px-3 py-1.5 outline-none"
               />
               <button
                 type="button"
                 onClick={handleAddChecklistItem}
-                className="px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-xl transition-all cursor-pointer"
+                className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold rounded-xl transition-all cursor-pointer"
               >
                 Add
               </button>
@@ -437,13 +437,13 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 {checklist.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between bg-zinc-50 px-2.5 py-1.5 rounded-lg text-xs"
+                    className="flex items-center justify-between bg-zinc-800 px-2.5 py-1.5 rounded-lg text-xs"
                   >
-                    <span className="text-zinc-700 truncate">{item.text}</span>
+                    <span className="text-zinc-300 truncate">{item.text}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveChecklistItem(item.id)}
-                      className="text-zinc-400 hover:text-rose-600 p-0.5"
+                      className="text-zinc-500 hover:text-rose-400 p-0.5"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -454,10 +454,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </div>
 
           {/* Pin as Focus Countdown Toggle */}
-          <div className="border-t border-zinc-100 pt-3 flex items-center justify-between">
+          <div className="border-t border-zinc-800 pt-3 flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold text-zinc-800 block">Focus Countdown</span>
-              <span className="text-[11px] text-zinc-500">
+              <span className="text-xs font-bold text-zinc-200 block">Focus Countdown</span>
+              <span className="text-[11px] text-zinc-400">
                 Pin this task to the main banner countdown timer
               </span>
             </div>
@@ -465,22 +465,22 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               type="checkbox"
               checked={pinnedCountdown}
               onChange={(e) => setPinnedCountdown(e.target.checked)}
-              className="w-4 h-4 rounded text-zinc-900 border-zinc-300 focus:ring-0 cursor-pointer"
+              className="w-4 h-4 rounded text-zinc-50 border-zinc-700 focus:ring-0 cursor-pointer"
             />
           </div>
 
           {/* Footer Actions: Sticky at bottom */}
-          <div className="sticky bottom-0 bg-white/95 backdrop-blur-md -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 border-t border-zinc-200 flex items-center justify-end gap-2.5 z-20 shadow-xs">
+          <div className="sticky bottom-0 bg-zinc-900/95 backdrop-blur-md -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 border-t border-zinc-800 flex items-center justify-end gap-2.5 z-20 shadow-xs">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 sm:flex-initial px-4 py-2.5 min-h-[42px] text-xs font-semibold text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all cursor-pointer text-center"
+              className="flex-1 sm:flex-initial px-4 py-2.5 min-h-[42px] text-xs font-semibold text-zinc-400 hover:text-zinc-50 hover:bg-zinc-700 rounded-xl transition-all cursor-pointer text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 sm:flex-initial px-5 py-2.5 min-h-[42px] text-xs font-bold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl shadow-xs transition-all cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 text-center"
+              className="flex-1 sm:flex-initial px-5 py-2.5 min-h-[42px] text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-all cursor-pointer active:scale-98 flex items-center justify-center gap-1.5 text-center"
             >
               <Plus className="w-3.5 h-3.5 shrink-0" />
               <span>{taskToEdit ? 'Save Changes' : 'Create Countdown'}</span>

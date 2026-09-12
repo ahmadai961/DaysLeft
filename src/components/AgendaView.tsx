@@ -29,10 +29,10 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
 
   if (sortedTasks.length === 0) {
     return (
-      <div className="bg-white border border-zinc-200 rounded-2xl p-12 text-center">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center">
         <Calendar className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-zinc-900">No scheduled tasks</h3>
-        <p className="text-xs text-zinc-500 mt-1">Select any date on the calendar to assign a new task.</p>
+        <h3 className="text-base font-bold text-zinc-50">No scheduled tasks</h3>
+        <p className="text-xs text-zinc-400 mt-1">Select any date on the calendar to assign a new task.</p>
       </div>
     );
   }
@@ -47,25 +47,25 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
   return (
     <div className="space-y-6">
       {Object.entries(groupedTasks).map(([dateStr, dateTasks]) => (
-        <div key={dateStr} className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-3 mb-3">
+        <div key={dateStr} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xs">
+          <div className="flex items-center justify-between border-b border-zinc-800 pb-3 mb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-zinc-900" />
-              <h3 className="text-sm font-bold text-zinc-900">{formatFriendlyDate(dateStr)}</h3>
-              <span className="text-xs font-semibold text-zinc-400">
+              <span className="w-2 h-2 rounded-full bg-zinc-300" />
+              <h3 className="text-sm font-bold text-zinc-50">{formatFriendlyDate(dateStr)}</h3>
+              <span className="text-xs font-semibold text-zinc-500">
                 ({dateTasks.length} task{dateTasks.length === 1 ? '' : 's'})
               </span>
             </div>
 
             <button
               onClick={() => onSelectDate(dateStr)}
-              className="text-xs font-semibold text-zinc-600 hover:text-zinc-900 flex items-center gap-1 cursor-pointer"
+              className="text-xs font-semibold text-zinc-400 hover:text-zinc-50 flex items-center gap-1 cursor-pointer"
             >
               View Day <ArrowUpRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="divide-y divide-zinc-100">
+          <div className="divide-y divide-zinc-800">
             {dateTasks.map((task) => {
               const countdown = calculateTaskCountdown(task);
               const isOverdue = countdown.isOverdue && !task.completed;
@@ -73,7 +73,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
               return (
                 <div
                   key={task.id}
-                  className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:bg-zinc-50/70 rounded-xl px-2 -mx-2 transition-all"
+                  className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:bg-zinc-800/70 rounded-xl px-2 -mx-2 transition-all"
                 >
                   <div className="flex items-start gap-3">
                     <button
@@ -81,7 +81,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                       className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all cursor-pointer ${
                         task.completed
                           ? 'bg-emerald-600 border-emerald-600 text-white'
-                          : 'border-zinc-300 hover:border-zinc-500 bg-white'
+                          : 'border-zinc-700 hover:border-zinc-500 bg-zinc-900'
                       }`}
                     >
                       {task.completed && <Check className="w-3.5 h-3.5" />}
@@ -91,28 +91,28 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                       <div className="flex items-center gap-2 flex-wrap">
                         {task.isFocusRunning && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500 text-white animate-pulse">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-zinc-900 animate-ping" />
                             Focus Active
                           </span>
                         )}
                         <h4
                           onClick={() => onSelectTask(task)}
-                          className={`text-sm font-bold text-zinc-900 cursor-pointer hover:underline ${
-                            task.completed ? 'line-through text-zinc-400' : ''
+                          className={`text-sm font-bold text-zinc-50 cursor-pointer hover:underline ${
+                            task.completed ? 'line-through text-zinc-500' : ''
                           }`}
                         >
                           {task.title}
                         </h4>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 border border-zinc-800">
                           {task.category}
                         </span>
                         <span
                           className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
                             task.priority === 'urgent'
-                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
+                              ? 'bg-rose-500/10 text-rose-300 border border-rose-500/30'
                               : task.priority === 'high'
-                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                              : 'bg-zinc-100 text-zinc-600'
+                              ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
+                              : 'bg-zinc-700 text-zinc-400'
                           }`}
                         >
                           {task.priority}
@@ -120,10 +120,10 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                       </div>
 
                       {task.description && (
-                        <p className="text-xs text-zinc-500 mt-1 line-clamp-1">{task.description}</p>
+                        <p className="text-xs text-zinc-400 mt-1 line-clamp-1">{task.description}</p>
                       )}
 
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-zinc-400">
+                      <div className="flex items-center gap-3 mt-1.5 text-xs text-zinc-500">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {formatTime(task.time)}
@@ -132,10 +132,10 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                         <span
                           className={`font-medium ${
                             task.completed
-                              ? 'text-emerald-600'
+                              ? 'text-emerald-400'
                               : isOverdue
-                              ? 'text-rose-600 font-semibold'
-                              : 'text-zinc-600'
+                              ? 'text-rose-400 font-semibold'
+                              : 'text-zinc-400'
                           }`}
                         >
                           {countdown.formattedString}
@@ -147,14 +147,14 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                   <div className="flex items-center gap-1.5 self-end sm:self-center">
                     <button
                       onClick={() => onEditTask(task)}
-                      className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 rounded-lg transition-all cursor-pointer"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-600/60 rounded-lg transition-all cursor-pointer"
                       title="Edit task"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => onDeleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer"
+                      className="p-1.5 text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-all cursor-pointer"
                       title="Delete task"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
