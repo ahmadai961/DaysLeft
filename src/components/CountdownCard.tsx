@@ -224,7 +224,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
         <div className="space-y-1">
           <h3
             onClick={() => onSelectTask && onSelectTask(task)}
-            className={`text-sm sm:text-base font-bold text-zinc-50 leading-snug cursor-pointer hover:underline ${
+            className={`text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-50 leading-snug cursor-pointer hover:underline ${
               isCompleted ? 'line-through text-zinc-400 dark:text-zinc-500' : ''
             }`}
           >

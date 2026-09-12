@@ -97,7 +97,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                         )}
                         <h4
                           onClick={() => onSelectTask(task)}
-                          className={`text-sm font-bold text-zinc-50 cursor-pointer hover:underline ${
+                          className={`text-sm font-bold text-zinc-900 dark:text-zinc-50 cursor-pointer hover:underline ${
                             task.completed ? 'line-through text-zinc-400 dark:text-zinc-500' : ''
                           }`}
                         >
