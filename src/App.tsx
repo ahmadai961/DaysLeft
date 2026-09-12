@@ -432,9 +432,9 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => handleOpenNewTaskModal(selectedDateStr)}
-                  className="px-3 py-1.5 min-h-[36px] text-xs font-bold bg-zinc-900 text-white rounded-xl flex items-center gap-1 cursor-pointer active:scale-95"
+                  className="px-4 py-2 min-h-[40px] text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl flex items-center gap-1.5 cursor-pointer active:scale-95"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-4 h-4" />
                   <span>Add Task</span>
                 </button>
               </div>
@@ -554,12 +554,12 @@ export default function App() {
         <button
           type="button"
           onClick={() => handleOpenNewTaskModal(selectedDateStr)}
-          className="pointer-events-auto flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-white px-4 py-3.5 rounded-full shadow-2xl border border-zinc-700/60 active:scale-95 transition-all cursor-pointer group"
+          className="pointer-events-auto flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-4 rounded-full shadow-2xl border border-blue-500/60 active:scale-95 transition-all cursor-pointer group"
           aria-label="Add Task / Create Countdown"
           id="mobile-fab-add-task"
         >
-          <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
-          <span className="text-xs font-bold tracking-wide pr-1">Add Task</span>
+          <Plus className="w-6 h-6 transition-transform group-hover:rotate-90" />
+          <span className="text-sm font-bold tracking-wide pr-1">Add Task</span>
         </button>
       </div>
 

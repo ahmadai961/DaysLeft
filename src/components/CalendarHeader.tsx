@@ -111,9 +111,9 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             {/* Add Task Primary Action */}
             <button
               onClick={onOpenNewTaskModal}
-              className="px-3 sm:px-3.5 py-2 min-h-[38px] sm:min-h-[40px] bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all shadow-xs hover:shadow cursor-pointer active:scale-95 shrink-0"
+              className="px-4 sm:px-5 py-2.5 min-h-[42px] sm:min-h-[46px] bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl flex items-center gap-1.5 transition-all shadow-xs hover:shadow cursor-pointer active:scale-95 shrink-0"
             >
-              <Plus className="w-4 h-4 shrink-0" />
+              <Plus className="w-5 h-5 shrink-0" />
               <span className="font-semibold">Add Task</span>
             </button>
           </div>
