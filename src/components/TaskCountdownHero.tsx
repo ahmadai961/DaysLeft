@@ -22,21 +22,21 @@ export const TaskCountdownHero: React.FC<TaskCountdownHeroProps> = ({
 }) => {
   if (!task) {
     return (
-      <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs relative overflow-hidden">
+      <div className="bg-white border border-zinc-200 rounded-2xl p-5 shadow-xs relative overflow-hidden dark:bg-zinc-900 dark:border-zinc-800">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-zinc-100 border border-zinc-200/80 flex items-center justify-center text-zinc-600 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-zinc-100 border border-zinc-200/80 flex items-center justify-center text-zinc-600 shrink-0 dark:bg-zinc-700 dark:border-zinc-800/80 dark:text-zinc-400">
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-zinc-900">No Active Countdown</h2>
-              <p className="text-xs text-zinc-500">Pick any date or task to start tracking.</p>
+              <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-50">No Active Countdown</h2>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">Pick any date or task to start tracking.</p>
             </div>
           </div>
           <button
             type="button"
             onClick={onOpenNewTaskModal}
-            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5" />
             Assign Task
