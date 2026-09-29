@@ -6,7 +6,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Task, CalendarViewMode, FilterTab } from './types';
 import { formatDateToISO, calculateCompletionTimeSaved } from './utils/dateUtils';
-import { loadTasksFromStorage, saveTasksToStorage } from './utils/initialTasks';
+import { loadTasksFromStorage } from './utils/initialTasks';
+import { useTaskSync } from './utils/useTaskSync';
 import { Theme, getInitialTheme, applyTheme } from './utils/theme';
 import { CalendarHeader } from './components/CalendarHeader';
 import { MonthCalendar } from './components/MonthCalendar';
@@ -40,10 +41,16 @@ export default function App() {
   const [mobileTab, setMobileTab] = useState<'calendar' | 'countdowns' | 'both'>('both');
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
 
-  // Sync tasks to localStorage whenever modified
-  useEffect(() => {
-    saveTasksToStorage(tasks);
-  }, [tasks]);
+  // Sync tasks with the /api/tasks backend (localStorage is kept as a cache/fallback).
+  // Tasks open in the editor or in Zen mode are never overwritten by polled server data.
+  const protectedTaskIds = useMemo(
+    () =>
+      [isTaskModalOpen ? taskToEdit?.id : undefined, zenTask?.id].filter(
+        (id): id is string => !!id
+      ),
+    [isTaskModalOpen, taskToEdit, zenTask]
+  );
+  useTaskSync(tasks, setTasks, protectedTaskIds);
 
   // Reflect the selected theme onto <html> and persist it whenever it changes
   useEffect(() => {

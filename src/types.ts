@@ -27,6 +27,7 @@ export interface Task {
   isFocusRunning?: boolean; // Whether count-up focus timer is currently active
   lastFocusStartedAt?: number; // Timestamp when current focus session started
   timeSavedMinutes?: number; // Minutes saved by completing early before deadline
+  externalId?: string; // Optional id supplied by an external client (e.g. a bot) via POST /api/tasks
 }
 
 export interface CountdownState {
