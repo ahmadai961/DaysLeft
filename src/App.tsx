@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Task, CalendarViewMode, FilterTab } from './types';
 import { formatDateToISO, calculateCompletionTimeSaved } from './utils/dateUtils';
-import { loadTasksFromStorage } from './utils/initialTasks';
+import { clearLegacyTaskCache } from './utils/initialTasks';
 import { useTaskSync } from './utils/useTaskSync';
 import { Theme, getInitialTheme, applyTheme } from './utils/theme';
 import { CalendarHeader } from './components/CalendarHeader';
@@ -19,10 +19,40 @@ import { ZenFocusOverlay } from './components/ZenFocusOverlay';
 import { TaskCompletionModal } from './components/TaskCompletionModal';
 import { ProductivityAnalytics } from './components/ProductivityAnalytics';
 import { AutoSchedulerModal } from './components/AutoSchedulerModal';
+import { LoginScreen, Session } from './components/LoginScreen';
 import { Clock, Calendar as CalendarIcon, Plus, ChevronRight, Check, Layers, Sparkles } from 'lucide-react';
 
+/**
+ * Login gate. The session token lives only in this component's state (no
+ * localStorage, no cookies), so a reload or a new tab asks for the PIN again.
+ */
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(() => loadTasksFromStorage());
+  const [session, setSession] = useState<Session | null>(null);
+
+  // The old shared per-device cache must never be uploaded into a manager's board.
+  useEffect(() => {
+    clearLegacyTaskCache();
+  }, []);
+
+  if (!session) return <LoginScreen onLogin={setSession} />;
+
+  // Keyed by token: locking and signing in again always starts from a clean board.
+  return (
+    <Board
+      key={session.token}
+      token={session.token}
+      onLock={() => setSession(null)}
+    />
+  );
+}
+
+interface BoardProps {
+  token: string;
+  onLock: () => void;
+}
+
+const Board: React.FC<BoardProps> = ({ token, onLock }) => {
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [selectedDateStr, setSelectedDateStr] = useState<string>(() =>
     formatDateToISO(new Date())
   );
@@ -41,7 +71,7 @@ export default function App() {
   const [mobileTab, setMobileTab] = useState<'calendar' | 'countdowns' | 'both'>('both');
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
 
-  // Sync tasks with the /api/tasks backend (localStorage is kept as a cache/fallback).
+  // Sync tasks with this user's board on the /api/tasks backend (an expired session locks).
   // Tasks open in the editor or in Zen mode are never overwritten by polled server data.
   const protectedTaskIds = useMemo(
     () =>
@@ -50,7 +80,12 @@ export default function App() {
       ),
     [isTaskModalOpen, taskToEdit, zenTask]
   );
-  useTaskSync(tasks, setTasks, protectedTaskIds);
+  const lockSession = useTaskSync(tasks, setTasks, protectedTaskIds, token, onLock);
+  // Lock button: save the last edit, end the session on the server, show the login screen.
+  const handleLock = () => {
+    lockSession();
+    onLock();
+  };
 
   // Reflect the selected theme onto <html> and persist it whenever it changes
   useEffect(() => {
@@ -337,6 +372,7 @@ export default function App() {
         pendingTaskCount={pendingCount}
         theme={theme}
         onThemeChange={setTheme}
+        onLock={handleLock}
       />
 
       {/* Main Container with extra bottom padding for mobile navigation and FAB */}
@@ -613,4 +649,4 @@ export default function App() {
       )}
     </div>
   );
-}
+};

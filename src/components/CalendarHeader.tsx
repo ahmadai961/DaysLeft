@@ -12,6 +12,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  Lock,
 } from 'lucide-react';
 
 interface CalendarHeaderProps {
@@ -29,6 +30,7 @@ interface CalendarHeaderProps {
   pendingTaskCount: number;
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
+  onLock: () => void;
 }
 
 export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
@@ -46,6 +48,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   pendingTaskCount,
   theme,
   onThemeChange,
+  onLock,
 }) => {
   const monthName = currentDate.toLocaleDateString('en-US', { month: 'long' });
   const year = currentDate.getFullYear();
@@ -73,6 +76,17 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
           {/* Desktop & Mobile Actions */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Lock: forget the session token and return to the login screen */}
+            <button
+              type="button"
+              onClick={onLock}
+              className="p-2 rounded-xl border border-zinc-200 bg-zinc-50 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 transition-all cursor-pointer dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-700"
+              title="Lock"
+              aria-label="Lock"
+            >
+              <Lock className="w-4 h-4" />
+            </button>
+
             {/* Mobile Search Toggle Button */}
             <button
               type="button"

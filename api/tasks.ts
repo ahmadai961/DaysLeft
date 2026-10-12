@@ -1,22 +1,39 @@
 /**
- * Vercel serverless function backing the shared task list.
+ * Vercel serverless function backing the per-manager task boards.
  *
- *   GET    /api/tasks        -> all tasks
- *   PUT    /api/tasks        -> replace the full list (web app save)
- *   POST   /api/tasks        -> add one task (bot)              [Bearer auth]
- *   DELETE /api/tasks/:id    -> remove a task by id/externalId  [Bearer auth]
+ *   GET    /api/tasks              -> the board's tasks          [session token, or API key + ?board=]
+ *   PUT    /api/tasks              -> replace the full list      [session token]
+ *   POST   /api/tasks              -> add one task (bot)         [API key; body.board]
+ *   DELETE /api/tasks/:id?board=   -> remove by id/externalId    [API key]
+ *
+ * Auth is "Authorization: Bearer <value>": either DAYSLEFT_API_KEY (Hermes) or a
+ * session token from POST /api/login, which the server maps to exactly one board.
+ * With the API key, a missing board means "test", so nothing reaches a manager's
+ * board by accident.
  *
  * /api/tasks/:id is rewritten to /api/tasks?id=:id in vercel.json.
  * This file is intentionally self-contained (type-only imports from src/) so it
  * bundles cleanly as an ES module on Vercel.
  */
 import { Redis } from '@upstash/redis';
+import { timingSafeEqual, createHash } from 'node:crypto';
 import type { Task, TaskPriority, TaskCategory } from '../src/types';
 
-const TASKS_KEY = 'daysleft:tasks';
+// Per-board keys, under their own "board:" prefix so no board name can collide with the
+// login keys (daysleft:pin:*, daysleft:session:*, daysleft:sessionver:*, daysleft:loginfail:*).
+// The legacy shared keys (daysleft:tasks / daysleft:deleted) are never touched.
+const tasksKey = (board: string) => `daysleft:board:${board}:tasks`;
 // Recently deleted ids, so a stale full-list PUT from the web app cannot resurrect them.
-const DELETED_KEY = 'daysleft:deleted';
+const deletedKey = (board: string) => `daysleft:board:${board}:deleted`;
+const sessionKey = (token: string) => `daysleft:session:${token}`;
+// Bumped by PUT /api/pin; sessions created under an older version are dead (api/login.ts).
+const sessionVersionKey = (username: string) => `daysleft:sessionver:${username}`;
 const MAX_TOMBSTONES = 1000;
+const DEFAULT_API_BOARD = 'test';
+// Same rule as usernames in api/login.ts and api/pin.ts.
+const BOARD_RE = /^[a-z0-9_-]{1,32}$/;
+// Session tokens are 32 random bytes, hex-encoded (api/login.ts).
+const TOKEN_RE = /^[a-f0-9]{64}$/;
 
 const PRIORITIES: TaskPriority[] = ['low', 'medium', 'high', 'urgent'];
 const CATEGORIES: TaskCategory[] = ['Work', 'Personal', 'Study', 'Health', 'Finance', 'Project', 'Other'];
@@ -51,37 +68,86 @@ function badRequest(error: string, details?: string[]): Response {
   return json(details && details.length ? { error, details } : { error }, 400);
 }
 
-async function readTasks(): Promise<Task[]> {
-  const stored = await getRedis().get<Task[]>(TASKS_KEY);
+async function readTasks(board: string): Promise<Task[]> {
+  const stored = await getRedis().get<Task[]>(tasksKey(board));
   return Array.isArray(stored) ? stored : [];
 }
 
-async function writeTasks(tasks: Task[]): Promise<void> {
-  await getRedis().set(TASKS_KEY, tasks);
+async function writeTasks(board: string, tasks: Task[]): Promise<void> {
+  await getRedis().set(tasksKey(board), tasks);
 }
 
-async function readTombstones(): Promise<string[]> {
-  const stored = await getRedis().get<string[]>(DELETED_KEY);
+async function readTombstones(board: string): Promise<string[]> {
+  const stored = await getRedis().get<string[]>(deletedKey(board));
   return Array.isArray(stored) ? stored : [];
 }
 
-async function addTombstones(ids: string[]): Promise<void> {
+async function addTombstones(board: string, ids: string[]): Promise<void> {
   if (ids.length === 0) return;
-  const existing = await readTombstones();
+  const existing = await readTombstones(board);
   const merged = [...existing.filter((id) => !ids.includes(id)), ...ids].slice(-MAX_TOMBSTONES);
-  await getRedis().set(DELETED_KEY, merged);
+  await getRedis().set(deletedKey(board), merged);
 }
 
-function isAuthorized(request: Request): boolean {
-  const expected = process.env.DAYSLEFT_API_KEY;
-  if (!expected) return false;
+function bearer(request: Request): string | null {
   const header = request.headers.get('authorization') || '';
   const match = header.match(/^Bearer\s+(.+)$/i);
-  return !!match && match[1].trim() === expected;
+  return match ? match[1].trim() : null;
+}
+
+// Compares fixed-length digests so neither the key's content nor its length leaks through timing.
+function isApiKey(value: string | null): boolean {
+  const expected = process.env.DAYSLEFT_API_KEY;
+  if (!expected || !value) return false;
+  const a = createHash('sha256').update(value).digest();
+  const b = createHash('sha256').update(expected).digest();
+  return timingSafeEqual(a, b);
+}
+
+/** Reads a numeric counter that Upstash may return as a number or a string; missing = 0. */
+function toVersion(value: unknown): number | null {
+  if (value === null || value === undefined) return 0;
+  const n = typeof value === 'string' ? Number(value) : value;
+  return typeof n === 'number' && Number.isInteger(n) ? n : null;
+}
+
+/**
+ * Board for a browser session token, or null if the token is unknown, expired, or
+ * was created before the user's PIN was last set (session value is "username:version").
+ */
+async function boardForSession(token: string | null): Promise<string | null> {
+  if (!token || !TOKEN_RE.test(token)) return null;
+  let session: unknown;
+  try {
+    session = await getRedis().get(sessionKey(token));
+  } catch {
+    // Upstash errors quote the command (and so the token); don't let it reach logs or responses.
+    throw new Error('Session lookup failed');
+  }
+  if (typeof session !== 'string') return null;
+  const match = session.match(/^([a-z0-9_-]{1,32}):(\d+)$/);
+  if (!match || !BOARD_RE.test(match[1])) return null;
+  const username = match[1];
+  const current = toVersion(await getRedis().get(sessionVersionKey(username)));
+  return current !== null && current === Number(match[2]) ? username : null;
+}
+
+/** Board named by Hermes, defaulting to "test"; null if the name is invalid. */
+function apiBoard(value: unknown): string | null {
+  if (value === undefined || value === null || value === '') return DEFAULT_API_BOARD;
+  return typeof value === 'string' && BOARD_RE.test(value) ? value : null;
 }
 
 function unauthorized(): Response {
   return json({ error: 'Unauthorized: missing or invalid "Authorization: Bearer <DAYSLEFT_API_KEY>" header' }, 401);
+}
+
+function sessionRequired(): Response {
+  return json({ error: 'Unauthorized: log in again' }, 401);
+}
+
+function invalidBoard(): Response {
+  return badRequest('"board" must be 1-32 characters of lowercase a-z, 0-9, "_" or "-"');
 }
 
 async function readJsonBody(request: Request): Promise<{ ok: true; value: unknown } | { ok: false; response: Response }> {
@@ -122,14 +188,24 @@ function withErrorHandling(handler: (request: Request) => Promise<Response>) {
     try {
       return await handler(request);
     } catch (e) {
-      console.error('[api/tasks]', e);
-      return json({ error: 'Internal server error', message: e instanceof Error ? e.message : String(e) }, 500);
+      // Upstash error messages quote the command (keys, values): log only the error name.
+      console.error('[api/tasks] internal error', e instanceof Error ? e.name : 'unknown');
+      return json({ error: 'Internal server error' }, 500);
     }
   };
 }
 
-export const GET = withErrorHandling(async () => {
-  return json({ tasks: await readTasks() });
+export const GET = withErrorHandling(async (request) => {
+  const token = bearer(request);
+  let board: string | null;
+  if (isApiKey(token)) {
+    board = apiBoard(new URL(request.url).searchParams.get('board'));
+    if (!board) return invalidBoard();
+  } else {
+    board = await boardForSession(token);
+    if (!board) return sessionRequired();
+  }
+  return json({ tasks: await readTasks(board) });
 });
 
 /**
@@ -141,6 +217,10 @@ export const GET = withErrorHandling(async () => {
  * instead of being wiped. Ids that were deleted via DELETE are never re-added.
  */
 export const PUT = withErrorHandling(async (request) => {
+  // Full-list replace is browser-only: the board always comes from the session.
+  const board = await boardForSession(bearer(request));
+  if (!board) return sessionRequired();
+
   const body = await readJsonBody(request);
   if ('response' in body) return body.response;
 
@@ -159,7 +239,7 @@ export const PUT = withErrorHandling(async (request) => {
     return badRequest('"knownIds" must be an array of strings');
   }
 
-  const [current, tombstones] = await Promise.all([readTasks(), readTombstones()]);
+  const [current, tombstones] = await Promise.all([readTasks(board), readTombstones(board)]);
   const deleted = new Set(tombstones);
   const clientTasks = (incoming as Task[]).filter((t) => !deleted.has(t.id));
   const clientIds = new Set(clientTasks.map((t) => t.id));
@@ -171,15 +251,15 @@ export const PUT = withErrorHandling(async (request) => {
     next = [...unseenServerTasks, ...clientTasks];
     // Tasks the client knew about and dropped were deleted in the app: tombstone them too.
     const removedByClient = current.filter((t) => !clientIds.has(t.id) && known.has(t.id)).map((t) => t.id);
-    await addTombstones(removedByClient);
+    await addTombstones(board, removedByClient);
   }
 
-  await writeTasks(next);
+  await writeTasks(board, next);
   return json({ tasks: next });
 });
 
 export const POST = withErrorHandling(async (request) => {
-  if (!isAuthorized(request)) return unauthorized();
+  if (!isApiKey(bearer(request))) return unauthorized();
 
   const body = await readJsonBody(request);
   if ('response' in body) return body.response;
@@ -205,9 +285,11 @@ export const POST = withErrorHandling(async (request) => {
   if (b.externalId !== undefined && (typeof b.externalId !== 'string' || !b.externalId.trim())) {
     errors.push('"externalId" must be a non-empty string');
   }
-  if (errors.length) return badRequest('Invalid task', errors);
+  const board = apiBoard(b.board);
+  if (!board) errors.push('"board" must be 1-32 characters of lowercase a-z, 0-9, "_" or "-"');
+  if (errors.length || !board) return badRequest('Invalid task', errors);
 
-  const tasks = await readTasks();
+  const tasks = await readTasks(board);
   const externalId = typeof b.externalId === 'string' ? b.externalId.trim() : undefined;
 
   // Idempotency: re-posting the same externalId returns the existing task.
@@ -237,23 +319,26 @@ export const POST = withErrorHandling(async (request) => {
     ...(externalId ? { externalId } : {}),
   };
 
-  await writeTasks([task, ...tasks]);
+  await writeTasks(board, [task, ...tasks]);
   return json({ task }, 201);
 });
 
 export const DELETE = withErrorHandling(async (request) => {
-  if (!isAuthorized(request)) return unauthorized();
+  if (!isApiKey(bearer(request))) return unauthorized();
 
-  const id = new URL(request.url).searchParams.get('id')?.trim();
+  const params = new URL(request.url).searchParams;
+  const board = apiBoard(params.get('board'));
+  if (!board) return invalidBoard();
+  const id = params.get('id')?.trim();
   if (!id) return badRequest('Task id is required: DELETE /api/tasks/:id');
 
-  const tasks = await readTasks();
+  const tasks = await readTasks(board);
   // Accept either the DaysLeft id or the externalId supplied at creation.
   const removed = tasks.filter((t) => t.id === id || (t.externalId !== undefined && t.externalId === id));
   if (removed.length === 0) return json({ error: `Task "${id}" not found` }, 404);
 
   const removedIds = new Set(removed.map((t) => t.id));
-  await writeTasks(tasks.filter((t) => !removedIds.has(t.id)));
-  await addTombstones([...removedIds]);
+  await writeTasks(board, tasks.filter((t) => !removedIds.has(t.id)));
+  await addTombstones(board, [...removedIds]);
   return json({ deleted: removed });
 });

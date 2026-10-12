@@ -1,5 +1,6 @@
 import { Task } from '../types';
 
+/** Legacy per-device cache. No longer used: it could leak one board's tasks into another. */
 export const STORAGE_KEY = 'daysleft_tasks';
 
 /**
@@ -9,37 +10,12 @@ export function getInitialTasks(): Task[] {
   return [];
 }
 
-/**
- * Loads tasks from browser localStorage under 'daysleft_tasks'.
- * If saved data exists on this device, returns it; otherwise returns an empty list ([]).
- */
-export function loadTasksFromStorage(): Task[] {
-  if (typeof window === 'undefined') {
-    return [];
-  }
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw !== null) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    }
-  } catch (e) {
-    console.error('Failed to load tasks from localStorage:', e);
-  }
-  return [];
-}
-
-/**
- * Persists tasks to browser localStorage under 'daysleft_tasks'.
- */
-export function saveTasksToStorage(tasks: Task[]): void {
+/** Removes the legacy 'daysleft_tasks' cache so an old board can never be uploaded anywhere. */
+export function clearLegacyTaskCache(): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-  } catch (e) {
-    console.error('Failed to save tasks to localStorage:', e);
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // localStorage inaccessible (private browsing, etc.) - nothing to clear
   }
 }
-
