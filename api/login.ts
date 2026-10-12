@@ -21,7 +21,8 @@ const SCRYPT_KEYLEN = 32;
 const SCRYPT_OPTIONS = { N: 16384, r: 8, p: 1 };
 
 const SESSION_TTL_SECONDS = 12 * 60 * 60;
-const LOCK_WINDOW_SECONDS = 15 * 60;
+const USER_LOCK_WINDOW_SECONDS = 5 * 60;
+const IP_LOCK_WINDOW_SECONDS = 15 * 60;
 const MAX_USER_FAILURES = 5;
 const MAX_IP_FAILURES = 50;
 
@@ -92,12 +93,13 @@ function clientIp(request: Request): string {
  * Counts an attempt *before* the PIN is checked, so parallel requests can't all
  * slip under the limit. A successful login gives its attempt back (see below), so
  * the counter effectively holds recent failures. The window starts at the first
- * failure and restarts when the limit is reached, so a lock lasts 15 minutes.
+ * failure and restarts when the limit is reached, so a lock lasts `windowSeconds`
+ * (5 minutes per user, 15 minutes per IP).
  */
-async function countAttempt(key: string, limit: number): Promise<number> {
+async function countAttempt(key: string, limit: number, windowSeconds: number): Promise<number> {
   const redis = getRedis();
   const n = await redis.incr(key);
-  if (n === 1 || n === limit) await redis.expire(key, LOCK_WINDOW_SECONDS);
+  if (n === 1 || n === limit) await redis.expire(key, windowSeconds);
   return n;
 }
 
@@ -122,8 +124,8 @@ export const POST = async (request: Request): Promise<Response> => {
 
     const ipKey = ipFailKey(clientIp(request));
     const [ipAttempts, userAttempts, stored] = await Promise.all([
-      countAttempt(ipKey, MAX_IP_FAILURES),
-      validUsername ? countAttempt(userFailKey(username), MAX_USER_FAILURES) : Promise.resolve(0),
+      countAttempt(ipKey, MAX_IP_FAILURES, IP_LOCK_WINDOW_SECONDS),
+      validUsername ? countAttempt(userFailKey(username), MAX_USER_FAILURES, USER_LOCK_WINDOW_SECONDS) : Promise.resolve(0),
       validUsername ? getRedis().get<StoredPin>(pinKey(username)) : Promise.resolve(null),
     ]);
     const locked = ipAttempts > MAX_IP_FAILURES || userAttempts > MAX_USER_FAILURES;
