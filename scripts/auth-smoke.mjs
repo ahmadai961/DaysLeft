@@ -14,7 +14,8 @@
  * The users "tasks" and "deleted" exist only for the key-collision checks (old board
  * keys daysleft:{board}:tasks|deleted would have hit their login keys). Their PINs
  * are random and never printed.
- * Each run adds about 8 failed logins to your IP's counter (limit 50 per 15 min).
+ * Each run adds about 15 failed logins to your IP's counter (limit 50 per 15 min),
+ * so run it at most 3 times per 15 minutes from one IP.
  * On a deployment protected by Vercel Authentication, also set
  * VERCEL_BYPASS=<Protection Bypass for Automation secret>.
  */
@@ -163,11 +164,28 @@ async function main() {
   check('DELETE missing id -> 404', (await call('DELETE', `/api/tasks/${extTest}`, { auth: API_KEY })).status === 404);
 
   console.log('\nLockout and PIN reset');
+  const LOCK_MESSAGE = 'Too many attempts. Please try again in a few minutes.';
   const wrong = pinA === '000000' ? '111111' : '000000';
-  for (let i = 1; i <= 5; i++) await login(A, wrong);
+  const beforeLock = [];
+  for (let i = 1; i <= 5; i++) beforeLock.push(await login(A, wrong));
+  check('failures 1-5 (before the lock) -> generic 401',
+    beforeLock.every((r) => r.status === 401 && r.text === wrongPin.text));
   const lockedRight = await login(A, pinA);
-  check('after 5 failures, correct PIN -> 401', lockedRight.status === 401);
-  check('locked error is identical', lockedRight.text === wrongPin.text, lockedRight.text);
+  check('after 5 failures, correct PIN -> 429', lockedRight.status === 429, lockedRight.text);
+  check('lockout message', lockedRight.json?.error === LOCK_MESSAGE, lockedRight.text);
+  check('lockout response has no time or count', !/\d/.test(lockedRight.text), lockedRight.text);
+
+  // A username that doesn't exist locks exactly the same way, so a lock reveals nothing.
+  const ghost = `nolock-${runId}`.slice(0, 32);
+  const ghostBefore = [];
+  for (let i = 1; i <= 5; i++) ghostBefore.push(await login(ghost, '1234'));
+  check('unknown user, failures 1-5 -> generic 401',
+    ghostBefore.every((r) => r.status === 401 && r.text === wrongPin.text));
+  const ghostLocked = await login(ghost, '1234');
+  check('unknown user, 6th attempt -> 429', ghostLocked.status === 429, ghostLocked.text);
+  check('unknown and real user get the identical lockout body', ghostLocked.text === lockedRight.text,
+    `${ghostLocked.text} | ${lockedRight.text}`);
+
   check('other user B still logs in', (await login(B, pinB.slice(0, 4))).status === 200);
   const newPinA = randomPin();
   check('PUT /api/pin resets A -> 200', (await setPin(A, newPinA)).status === 200);

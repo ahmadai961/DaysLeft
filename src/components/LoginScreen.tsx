@@ -41,7 +41,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         onLogin({ token: data.token, username: data.username });
         return;
       }
-      setError(res.status === 401 ? 'Invalid username or PIN' : 'Could not sign in. Please try again.');
+      setError(
+        res.status === 401
+          ? 'Invalid username or PIN'
+          : res.status === 429
+            ? 'Too many attempts. Please try again in a few minutes.'
+            : 'Could not sign in. Please try again.'
+      );
     } catch {
       setError('Could not reach the server. Please try again.');
     } finally {

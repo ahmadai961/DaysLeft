@@ -3,9 +3,11 @@
  *
  *   POST /api/login  { username, pin }  -> { token, username, expiresIn }
  *
- * Every failure (unknown user, wrong PIN, bad format, locked user or IP) returns
- * the same 401 body after the same scrypt work, so responses don't reveal which
- * usernames exist. PINs are set via PUT /api/pin.
+ * Every failure (unknown user, wrong PIN, bad format) returns the same 401 body
+ * after the same scrypt work, so responses don't reveal which usernames exist.
+ * A locked username or IP gets 429 with one fixed message (no remaining time or
+ * attempt count); the failure counter applies to any valid username, existing or
+ * not, so a lock reveals nothing either. PINs are set via PUT /api/pin.
  *
  * Self-contained like api/tasks.ts. The PIN hashing parameters must stay in sync
  * with api/pin.ts.
@@ -68,6 +70,10 @@ function json(body: unknown, status = 200): Response {
 
 function invalidLogin(): Response {
   return json({ error: 'Invalid username or PIN' }, 401);
+}
+
+function tooManyAttempts(): Response {
+  return json({ error: 'Too many attempts. Please try again in a few minutes.' }, 429);
 }
 
 function scryptAsync(pin: string, salt: string): Promise<Buffer> {
@@ -136,8 +142,10 @@ export const POST = async (request: Request): Promise<Response> => {
     const actual = await scryptAsync(validPin ? pin : '000000', hasPin ? stored.salt : DUMMY_SALT);
     const pinMatches = expected.length === actual.length && timingSafeEqual(expected, actual);
 
-    // A locked user or IP gets the generic error even with the right PIN.
-    if (locked || !validUsername || !validPin || !hasPin || !pinMatches) return invalidLogin();
+    // Decided only after the scrypt work above, so a lock costs the same time as any
+    // other attempt. A locked user or IP is refused even with the right PIN.
+    if (locked) return tooManyAttempts();
+    if (!validUsername || !validPin || !hasPin || !pinMatches) return invalidLogin();
 
     const versionNumber = typeof version === 'string' ? Number(version) : version ?? 0;
     if (typeof versionNumber !== 'number' || !Number.isInteger(versionNumber)) return invalidLogin();
