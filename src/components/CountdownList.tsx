@@ -120,13 +120,13 @@ export const CountdownList: React.FC<CountdownListProps> = ({
               <span>Add Your First Task</span>
             </button>
           )}
-          <div className="mt-4 pt-3 border-t border-zinc-200/70 w-full max-w-[260px] flex items-center justify-center gap-1.5 text-[11px] text-zinc-400 dark:border-zinc-800/70 dark:text-zinc-500">
-            <Calendar className="w-3.5 h-3.5 text-zinc-400 shrink-0 dark:text-zinc-500" />
+          <div className="mt-4 pt-3 border-t border-zinc-200/70 w-full max-w-[260px] flex items-center justify-center gap-1.5 text-[11px] text-zinc-500 dark:border-zinc-800/70 dark:text-zinc-500">
+            <Calendar className="w-3.5 h-3.5 text-zinc-500 shrink-0 dark:text-zinc-500" />
             <span>Click any day on the calendar to schedule</span>
           </div>
         </div>
       ) : sortedTasks.length === 0 ? (
-        <div className="py-10 text-center text-zinc-400 dark:text-zinc-500">
+        <div className="py-10 text-center text-zinc-500 dark:text-zinc-500">
           <Clock className="w-8 h-8 mx-auto mb-2 text-zinc-300" />
           <p className="text-xs font-medium">No tasks found for the '{activeFilter}' filter.</p>
           <button

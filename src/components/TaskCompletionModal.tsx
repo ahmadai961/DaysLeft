@@ -83,7 +83,7 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
           {/* Task Title & Category */}
           <div className="bg-zinc-50 border border-zinc-100 rounded-xl p-3.5 flex items-start justify-between gap-3 dark:bg-zinc-800 dark:border-zinc-800">
             <div>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 block mb-0.5 dark:text-zinc-500">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500 block mb-0.5 dark:text-zinc-500">
                 Completed Task
               </span>
               <h3 className="text-sm sm:text-base font-bold text-zinc-900 line-clamp-2 dark:text-zinc-50">
@@ -131,7 +131,7 @@ export const TaskCompletionModal: React.FC<TaskCompletionModalProps> = ({
                 {timeSavedInfo.isEarly ? (
                   <Zap className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                 ) : (
-                  <Clock className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                  <Clock className="w-4 h-4 text-zinc-500 dark:text-zinc-500" />
                 )}
                 <span
                   className={`text-[11px] font-semibold uppercase tracking-wider ${

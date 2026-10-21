@@ -230,7 +230,7 @@ export const ProductivityAnalytics: React.FC<ProductivityAnalyticsProps> = ({ ta
         {/* Global Total Focus Time Card */}
         <div className="bg-zinc-900 text-white rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-sm border border-zinc-800">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider dark:text-zinc-500">
+            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider dark:text-zinc-500">
               {timeFilter === 'today' ? "Today's Active Focus" : 'Total Logged Focus'}
             </span>
             <Flame className="w-5 h-5 text-amber-400" />
@@ -240,12 +240,12 @@ export const ProductivityAnalytics: React.FC<ProductivityAnalyticsProps> = ({ ta
             <div className="text-2xl sm:text-3xl font-mono font-black tracking-tight text-white">
               {formatSecondsToFriendly(totalFocusSecondsOverall)}
             </div>
-            <p className="text-xs text-zinc-400 mt-1 dark:text-zinc-500">
+            <p className="text-xs text-zinc-500 mt-1 dark:text-zinc-500">
               Active deep work sessions tracked with count-up focus
             </p>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-xs text-zinc-400 font-medium dark:text-zinc-500">
+          <div className="flex items-center justify-between pt-2 border-t border-zinc-800/80 text-xs text-zinc-500 font-medium dark:text-zinc-500">
             <span>Tasks Finished: <strong className="text-white">{totalCompletedTasks}</strong></span>
             <span>Active Items: <strong className="text-white">{tasks.length - totalCompletedTasks}</strong></span>
           </div>
@@ -273,7 +273,7 @@ export const ProductivityAnalytics: React.FC<ProductivityAnalyticsProps> = ({ ta
                     <h4 className="text-sm font-bold text-zinc-900 group-hover:text-zinc-950 dark:text-zinc-50 dark:group-hover:text-white">
                       {cfg.name}
                     </h4>
-                    <span className="text-[11px] text-zinc-400 font-medium dark:text-zinc-500">
+                    <span className="text-[11px] text-zinc-500 font-medium dark:text-zinc-500">
                       {cat.totalCount} {cat.totalCount === 1 ? 'task' : 'tasks'} ({cat.completed} done)
                     </span>
                   </div>
@@ -303,7 +303,7 @@ export const ProductivityAnalytics: React.FC<ProductivityAnalyticsProps> = ({ ta
               {/* Footer Mini Stats */}
               <div className="flex items-center justify-between pt-3 mt-3 border-t border-zinc-100 text-[11px] text-zinc-500 font-medium dark:border-zinc-800 dark:text-zinc-400">
                 <span className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-zinc-400 dark:text-zinc-500" />
+                  <Clock className="w-3 h-3 text-zinc-500 dark:text-zinc-500" />
                   All-Time: {formatSecondsToFriendly(cat.totalSeconds)}
                 </span>
                 {cat.totalSavedMinutes > 0 && (

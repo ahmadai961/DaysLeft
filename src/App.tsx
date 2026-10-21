@@ -470,7 +470,7 @@ const Board: React.FC<BoardProps> = ({ token, onLock }) => {
             <div className="lg:hidden bg-white border border-zinc-200 rounded-2xl p-3.5 shadow-xs space-y-2.5 dark:bg-zinc-900 dark:border-zinc-800">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-[11px] font-bold uppercase text-zinc-400 tracking-wider block dark:text-zinc-500">
+                  <span className="text-[11px] font-bold uppercase text-zinc-500 tracking-wider block dark:text-zinc-500">
                     Selected Day
                   </span>
                   <span className="text-sm font-bold text-zinc-900 dark:text-zinc-50">
@@ -516,7 +516,7 @@ const Board: React.FC<BoardProps> = ({ token, onLock }) => {
                         </button>
                         <span
                           className={`text-xs font-semibold truncate ${
-                            t.completed ? 'line-through text-zinc-400 dark:text-zinc-500' : 'text-zinc-800 dark:text-zinc-200'
+                            t.completed ? 'line-through text-zinc-500 dark:text-zinc-500' : 'text-zinc-800 dark:text-zinc-200'
                           }`}
                         >
                           {t.title}
@@ -537,7 +537,7 @@ const Board: React.FC<BoardProps> = ({ token, onLock }) => {
                   ))}
                 </div>
               ) : (
-                <div className="text-[11px] text-zinc-400 pt-1 dark:text-zinc-500">
+                <div className="text-[11px] text-zinc-500 pt-1 dark:text-zinc-500">
                   No tasks scheduled for this day yet.
                 </div>
               )}

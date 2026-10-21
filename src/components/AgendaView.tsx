@@ -52,7 +52,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-zinc-900 dark:bg-zinc-300" />
               <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-50">{formatFriendlyDate(dateStr)}</h3>
-              <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500">
+              <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-500">
                 ({dateTasks.length} task{dateTasks.length === 1 ? '' : 's'})
               </span>
             </div>
@@ -97,8 +97,8 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                         )}
                         <h4
                           onClick={() => onSelectTask(task)}
-                          className={`text-sm font-bold text-zinc-50 cursor-pointer hover:underline ${
-                            task.completed ? 'line-through text-zinc-400 dark:text-zinc-500' : ''
+                          className={`text-sm font-bold text-zinc-900 dark:text-zinc-50 cursor-pointer hover:underline ${
+                            task.completed ? 'line-through text-zinc-500 dark:text-zinc-500' : ''
                           }`}
                         >
                           {task.title}
@@ -123,7 +123,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                         <p className="text-xs text-zinc-500 mt-1 line-clamp-1 dark:text-zinc-400">{task.description}</p>
                       )}
 
-                      <div className="flex items-center gap-3 mt-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+                      <div className="flex items-center gap-3 mt-1.5 text-xs text-zinc-500 dark:text-zinc-500">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {formatTime(task.time)}
@@ -147,14 +147,14 @@ export const AgendaView: React.FC<AgendaViewProps> = ({
                   <div className="flex items-center gap-1.5 self-end sm:self-center">
                     <button
                       onClick={() => onEditTask(task)}
-                      className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 rounded-lg transition-all cursor-pointer dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-600/60"
+                      className="p-1.5 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-200/60 rounded-lg transition-all cursor-pointer dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-600/60"
                       title="Edit task"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => onDeleteTask(task.id)}
-                      className="p-1.5 text-zinc-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer dark:text-zinc-500 dark:hover:text-rose-400 dark:hover:bg-rose-500/10"
+                      className="p-1.5 text-zinc-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all cursor-pointer dark:text-zinc-500 dark:hover:text-rose-400 dark:hover:bg-rose-500/10"
                       title="Delete task"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

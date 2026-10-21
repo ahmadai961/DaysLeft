@@ -99,7 +99,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
             {/* Desktop Search Input */}
             <div className="relative hidden sm:block w-44 md:w-56">
-              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 dark:text-zinc-500" />
+              <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 dark:text-zinc-500" />
               <input
                 type="text"
                 placeholder="Search tasks..."
@@ -110,7 +110,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 text-xs font-bold px-1 dark:text-zinc-500 dark:hover:text-zinc-400"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-600 text-xs font-bold px-1 dark:text-zinc-500 dark:hover:text-zinc-400"
                 >
                   ×
                 </button>
@@ -143,7 +143,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         {/* Mobile Search Input dropdown when open */}
         {isMobileSearchOpen && (
           <div className="relative sm:hidden pt-1 animate-in fade-in slide-in-from-top-1 duration-150">
-            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 dark:text-zinc-500" />
+            <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 dark:text-zinc-500" />
             <input
               type="text"
               autoFocus
@@ -155,7 +155,7 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             {searchQuery && (
               <button
                 onClick={() => onSearchChange('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 text-sm font-bold p-1 dark:text-zinc-500 dark:hover:text-zinc-300"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-700 text-sm font-bold p-1 dark:text-zinc-500 dark:hover:text-zinc-300"
               >
                 ×
               </button>

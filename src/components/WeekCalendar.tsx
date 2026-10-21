@@ -47,7 +47,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
               {/* Day Header */}
               <div className="border-b border-zinc-100 pb-1.5 sm:pb-2 flex items-center justify-between dark:border-zinc-800">
                 <div className="flex items-center sm:block gap-2 sm:gap-0">
-                  <div className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider dark:text-zinc-500">
+                  <div className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider dark:text-zinc-500">
                     {weekdayShort}
                   </div>
                   <div className="flex items-center gap-1.5 sm:mt-0.5">
@@ -102,7 +102,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                           isFocus
                             ? 'bg-sky-50 text-sky-950 border-sky-400 font-semibold shadow-xs ring-1 ring-sky-300 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/50'
                             : task.completed
-                            ? 'bg-zinc-50 text-zinc-400 border-zinc-200/60 line-through dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-800/60'
+                            ? 'bg-zinc-50 text-zinc-500 border-zinc-200/60 line-through dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-800/60'
                             : 'bg-white text-zinc-800 border-zinc-200 hover:border-zinc-300 hover:shadow-xs dark:bg-zinc-900 dark:text-zinc-200 dark:border-zinc-800 dark:hover:border-zinc-700'
                         }`}
                       >
@@ -123,7 +123,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                           )}
                         </div>
                         <div className="flex items-center justify-between gap-1 text-[10px]">
-                          <div className="flex items-center gap-1 text-zinc-400 dark:text-zinc-500">
+                          <div className="flex items-center gap-1 text-zinc-500 dark:text-zinc-500">
                             <Clock className="w-3 h-3" />
                             <span>{formatTime(task.time)}</span>
                           </div>
@@ -140,7 +140,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
               </div>
 
               {/* Day Bottom Summary */}
-              <div className="pt-2 border-t border-zinc-100 text-[10px] font-medium text-zinc-400 flex items-center justify-between dark:border-zinc-800 dark:text-zinc-500">
+              <div className="pt-2 border-t border-zinc-100 text-[10px] font-medium text-zinc-500 flex items-center justify-between dark:border-zinc-800 dark:text-zinc-500">
                 <span>{dayTasks.length} task{dayTasks.length === 1 ? '' : 's'}</span>
                 <span className="text-zinc-500 dark:text-zinc-400">{dayTasks.filter(t => t.completed).length} done</span>
               </div>

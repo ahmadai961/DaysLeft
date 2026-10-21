@@ -110,14 +110,14 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
           <div className="flex items-center gap-1.5 flex-wrap">
             {/* COUNTDOWN Badge with Task Theme Color */}
             <span
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-2xs"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-2xs text-[color:color-mix(in_srgb,var(--tc)_55%,black)] dark:text-[color:var(--tc)]"
               style={{
+                '--tc': taskColor,
                 backgroundColor: `${taskColor}12`,
                 borderColor: `${taskColor}35`,
-                color: taskColor,
-              }}
+              } as React.CSSProperties}
             >
-              <Clock className="w-3 h-3" style={{ color: taskColor }} />
+              <Clock className="w-3 h-3" />
               COUNTDOWN
             </span>
 
@@ -190,7 +190,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
                 className={`p-1.5 rounded-lg border transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center ${
                   task.pinnedCountdown
                     ? 'bg-amber-50 border-amber-300 text-amber-600 shadow-2xs dark:bg-amber-500/10 dark:border-amber-500/30 dark:text-amber-400'
-                    : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-700'
+                    : 'bg-zinc-50 border-zinc-200 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-700'
                 }`}
                 title={task.pinnedCountdown ? 'Unpin countdown' : 'Pin countdown to top'}
               >
@@ -211,7 +211,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
               <button
                 type="button"
                 onClick={() => onDeleteTask(task.id)}
-                className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-rose-50 hover:border-rose-200 text-zinc-400 hover:text-rose-600 transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center dark:border-zinc-800 dark:bg-zinc-800 dark:hover:bg-rose-500/10 dark:hover:border-rose-500/30 dark:text-zinc-500 dark:hover:text-rose-400"
+                className="p-1.5 rounded-lg border border-zinc-200 bg-zinc-50 hover:bg-rose-50 hover:border-rose-200 text-zinc-500 hover:text-rose-600 transition-all cursor-pointer min-h-[30px] min-w-[30px] flex items-center justify-center dark:border-zinc-800 dark:bg-zinc-800 dark:hover:bg-rose-500/10 dark:hover:border-rose-500/30 dark:text-zinc-500 dark:hover:text-rose-400"
                 title="Delete task"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -224,8 +224,8 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
         <div className="space-y-1">
           <h3
             onClick={() => onSelectTask && onSelectTask(task)}
-            className={`text-sm sm:text-base font-bold text-zinc-50 leading-snug cursor-pointer hover:underline ${
-              isCompleted ? 'line-through text-zinc-400 dark:text-zinc-500' : ''
+            className={`text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-50 leading-snug cursor-pointer hover:underline ${
+              isCompleted ? 'line-through text-zinc-500 dark:text-zinc-500' : ''
             }`}
           >
             {task.title}
@@ -257,7 +257,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
                   >
                     {item.done && <Check className="w-2 h-2" />}
                   </div>
-                  <span className={item.done ? 'line-through text-zinc-400 dark:text-zinc-500' : ''}>
+                  <span className={item.done ? 'line-through text-zinc-500 dark:text-zinc-500' : ''}>
                     {item.text}
                   </span>
                 </div>
@@ -268,12 +268,12 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
           {/* Date & Time with calendar & clock icons */}
           <div className="flex flex-wrap items-center gap-2 text-[11px] text-zinc-500 font-medium pt-0.5 dark:text-zinc-400">
             <div className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+              <Calendar className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-500" />
               <span>{formatFriendlyDate(task.date)}</span>
             </div>
             <span className="text-zinc-300">•</span>
             <div className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+              <Clock className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-500" />
               <span>{formatTime(task.time)}</span>
             </div>
           </div>
@@ -282,11 +282,11 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
         {/* Dynamic Colored Countdown Progress Bar */}
         <div className="space-y-1 pt-0.5">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="font-semibold flex items-center gap-1.5" style={{ color: taskColor }}>
+            <span className="font-semibold flex items-center gap-1.5 text-[color:color-mix(in_srgb,var(--tc)_55%,black)] dark:text-[color:var(--tc)]" style={{ '--tc': taskColor } as React.CSSProperties}>
               <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: taskColor }} />
               <span>{countdown.formattedString}</span>
             </span>
-            <span className="font-mono text-[10px] font-bold text-zinc-400 dark:text-zinc-500">
+            <span className="font-mono text-[10px] font-bold text-zinc-500 dark:text-zinc-500">
               {countdown.progress}% elapsed
             </span>
           </div>
@@ -308,7 +308,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
             <span className="text-base sm:text-lg font-bold text-zinc-900 block leading-none dark:text-zinc-50">
               {String(countdown.days).padStart(2, '0')}
             </span>
-            <span className="text-[9px] uppercase font-bold text-zinc-400 tracking-wider mt-1 dark:text-zinc-500">
+            <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-wider mt-1 dark:text-zinc-500">
               DAYS
             </span>
           </div>
@@ -318,7 +318,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
             <span className="text-base sm:text-lg font-bold text-zinc-900 block leading-none dark:text-zinc-50">
               {String(countdown.hours).padStart(2, '0')}
             </span>
-            <span className="text-[9px] uppercase font-bold text-zinc-400 tracking-wider mt-1 dark:text-zinc-500">
+            <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-wider mt-1 dark:text-zinc-500">
               HOURS
             </span>
           </div>
@@ -328,15 +328,15 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
             <span className="text-base sm:text-lg font-bold text-zinc-900 block leading-none dark:text-zinc-50">
               {String(countdown.minutes).padStart(2, '0')}
             </span>
-            <span className="text-[9px] uppercase font-bold text-zinc-400 tracking-wider mt-1 dark:text-zinc-500">
+            <span className="text-[9px] uppercase font-bold text-zinc-500 tracking-wider mt-1 dark:text-zinc-500">
               MINS
             </span>
           </div>
 
           {/* Secs (Themed colored box with white text) */}
           <div
-            style={{ backgroundColor: taskColor }}
-            className="text-white border border-transparent rounded-xl py-1.5 sm:py-2 px-1 flex flex-col items-center justify-center shadow-xs transition-colors"
+            style={{ '--tc': taskColor } as React.CSSProperties}
+            className="bg-[color:color-mix(in_srgb,var(--tc)_70%,black)] dark:bg-[color:var(--tc)] text-white border border-transparent rounded-xl py-1.5 sm:py-2 px-1 flex flex-col items-center justify-center shadow-xs transition-colors"
           >
             <span className="text-base sm:text-lg font-bold text-white block leading-none">
               {String(countdown.seconds).padStart(2, '0')}
@@ -368,7 +368,7 @@ export const CountdownCard: React.FC<CountdownCardProps> = ({
                 disabled={isCompleted}
                 className={`flex-1 py-2.5 px-3 min-h-[42px] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.99] ${
                   isCompleted
-                    ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
+                    ? 'bg-zinc-100 text-zinc-500 border border-zinc-200 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
                     : focusSeconds > 0
                     ? 'bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 shadow-2xs dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/20 dark:border-sky-500/30'
                     : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-800 border border-zinc-200/90 shadow-2xs dark:bg-zinc-700 dark:hover:bg-zinc-600 dark:text-zinc-200 dark:border-zinc-800/90'

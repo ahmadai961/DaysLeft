@@ -56,11 +56,11 @@ export const SelectedDatePanel: React.FC<SelectedDatePanelProps> = ({
       {/* Tasks List */}
       {tasks.length === 0 ? (
         <div className="py-10 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 mb-3 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-500">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500 mb-3 dark:bg-zinc-800 dark:border-zinc-800 dark:text-zinc-500">
             <Calendar className="w-6 h-6" />
           </div>
           <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-200">Free Schedule</h3>
-          <p className="text-xs text-zinc-400 max-w-xs mt-1 dark:text-zinc-500">
+          <p className="text-xs text-zinc-500 max-w-xs mt-1 dark:text-zinc-500">
             There are no tasks scheduled for this day. Click &ldquo;Assign Task Here&rdquo; to add one.
           </p>
         </div>

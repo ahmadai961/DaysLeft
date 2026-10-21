@@ -36,7 +36,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
         {WEEKDAYS.map((day, idx) => (
           <div
             key={day}
-            className={`${idx === 0 || idx === 6 ? 'text-zinc-400 dark:text-zinc-500' : 'text-zinc-700 dark:text-zinc-300'}`}
+            className={`${idx === 0 || idx === 6 ? 'text-zinc-500 dark:text-zinc-500' : 'text-zinc-700 dark:text-zinc-300'}`}
           >
             <span className="sm:hidden">{day.charAt(0)}</span>
             <span className="hidden sm:inline">{day}</span>
@@ -65,7 +65,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                   ? 'bg-zinc-50/90 ring-2 ring-zinc-900 ring-inset z-10 dark:bg-zinc-800/90 dark:ring-zinc-100'
                   : isCurrentMonth
                   ? 'bg-white hover:bg-zinc-50/60 dark:bg-zinc-900 dark:hover:bg-zinc-800/60'
-                  : 'bg-zinc-50/40 text-zinc-400 hover:bg-zinc-50/80 dark:bg-zinc-800/40 dark:text-zinc-500 dark:hover:bg-zinc-800/80'
+                  : 'bg-zinc-50/40 text-zinc-500 hover:bg-zinc-50/80 dark:bg-zinc-800/40 dark:text-zinc-500 dark:hover:bg-zinc-800/80'
               }`}
             >
               {/* Day Cell Top Bar: Date Number & Quick Add */}
@@ -79,7 +79,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                         ? 'bg-zinc-200 text-zinc-900 dark:bg-zinc-600 dark:text-zinc-50'
                         : isCurrentMonth
                         ? 'text-zinc-800 group-hover:text-zinc-950 dark:text-zinc-200 dark:group-hover:text-white'
-                        : 'text-zinc-400 dark:text-zinc-500'
+                        : 'text-zinc-500 dark:text-zinc-500'
                     }`}
                   >
                     {dayItem.dayNumber}
@@ -147,7 +147,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                         isFocus
                           ? 'bg-sky-50 text-sky-950 border-sky-400 font-semibold shadow-xs ring-1 ring-sky-300 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/50'
                           : isDone
-                          ? 'bg-zinc-100 text-zinc-400 border-zinc-200 line-through dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
+                          ? 'bg-zinc-100 text-zinc-500 border-zinc-200 line-through dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
                           : t.priority === 'urgent'
                           ? 'bg-rose-50 text-rose-800 border-rose-200 font-medium dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30'
                           : t.priority === 'high'
@@ -185,7 +185,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
 
               {/* Day Cell Bottom Indicator */}
               {dayTasks.length > 0 && (
-                <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-zinc-400 font-medium pt-0.5 dark:text-zinc-500">
+                <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-zinc-500 font-medium pt-0.5 dark:text-zinc-500">
                   <div className="flex items-center gap-1 truncate">
                     {completedCount === dayTasks.length ? (
                       <span className="text-emerald-600 font-semibold flex items-center gap-0.5 dark:text-emerald-400">

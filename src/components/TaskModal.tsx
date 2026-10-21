@@ -165,7 +165,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer dark:hover:bg-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
+            className="w-8 h-8 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-500 hover:text-zinc-700 transition-colors cursor-pointer dark:hover:bg-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300"
           >
             <X className="w-4 h-4" />
           </button>
@@ -178,7 +178,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         >
           {/* Quick Date Presets */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-[11px] font-semibold text-zinc-400 mr-1 dark:text-zinc-500">Presets:</span>
+            <span className="text-[11px] font-semibold text-zinc-500 mr-1 dark:text-zinc-500">Presets:</span>
             <button
               type="button"
               onClick={() => handleSetQuickPreset('today')}
@@ -229,7 +229,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-zinc-700 flex items-center gap-1 dark:text-zinc-300">
-                <Calendar className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                <Calendar className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-500" />
                 Scheduled Date <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
@@ -244,7 +244,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-zinc-700 flex items-center gap-1 dark:text-zinc-300">
-                  <Clock className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+                  <Clock className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-500" />
                   Due Time
                 </label>
                 <label className="flex items-center gap-1 text-[11px] text-zinc-500 cursor-pointer dark:text-zinc-400">
@@ -264,7 +264,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 onChange={(e) => setTime(e.target.value)}
                 className={`w-full text-xs font-medium border rounded-xl px-3 py-2 outline-none transition-all ${
                   isAllDay
-                    ? 'bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
+                    ? 'bg-zinc-100 text-zinc-500 border-zinc-200 cursor-not-allowed dark:bg-zinc-700 dark:text-zinc-500 dark:border-zinc-800'
                     : 'bg-zinc-50 focus:bg-white text-zinc-900 border-zinc-200 focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 dark:bg-zinc-800 dark:focus:bg-zinc-900 dark:text-zinc-50 dark:border-zinc-800 dark:focus:ring-blue-500/40 dark:focus:border-blue-500'
                 }`}
               />
@@ -316,7 +316,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                 <Palette className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
                 <span>Countdown Bar & Card Color</span>
               </label>
-              <span className="text-[11px] text-zinc-400 dark:text-zinc-500">
+              <span className="text-[11px] text-zinc-500 dark:text-zinc-500">
                 {color ? 'Custom color' : 'Auto random color'}
               </span>
             </div>
@@ -443,7 +443,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRemoveChecklistItem(item.id)}
-                      className="text-zinc-400 hover:text-rose-600 p-0.5 dark:text-zinc-500 dark:hover:text-rose-400"
+                      className="text-zinc-500 hover:text-rose-600 p-0.5 dark:text-zinc-500 dark:hover:text-rose-400"
                     >
                       <X className="w-3 h-3" />
                     </button>
